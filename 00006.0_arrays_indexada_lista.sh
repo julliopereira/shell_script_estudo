@@ -40,9 +40,9 @@ echo "${MEU_ARRAY[*]} -> removido arrays!"
 echo "---------------------------------------------------------"
 # EXEMPLOS COM LAÇO:
 
-echo -e "maria\njose\nroberto\npedro\njulio\njoao\njair" > /tmp/arquivox.txt
+echo -e "maria\njose\nroberto\npedro\njulio\njoao\njair" > /tmp/arquivox.txt # CRIA ARQUIVO EM /tmp
 C=0
-for N in $(cat /tmp/arquivox.txt); do
+for N in $(cat /tmp/arquivox.txt); do       # L
     LISTA[$C]=$N
     let C++
 done
