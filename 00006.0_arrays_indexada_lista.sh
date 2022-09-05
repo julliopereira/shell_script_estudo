@@ -40,10 +40,19 @@ echo "${MEU_ARRAY[*]} -> removido arrays!"
 echo "---------------------------------------------------------"
 # EXEMPLOS COM LAÇO:
 
-echo -e "maria\njose\nroberto\npedro\njulio\njoao\njair" > /tmp/arquivox.txt # CRIA ARQUIVO EM /tmp
+echo -e "maria\njose\nroberto\npedro\njulio\njoao\njair" > /tmp/arq.txt # CRIA ARQUIVO EM /tmp
 C=0
-for N in $(cat /tmp/arquivox.txt); do       # L
-    LISTA[$C]=$N
-    let C++
+for N in $(cat /tmp/arq.txt); do       # LÊ CADA LINHA DO ARQUIVO ARMAZENANDO EM N
+    LISTA[$C]=$N                       # ADICIONA NA POSICAO $C O VALOR $N
+    let C++                            # INCREMENTA 1 NA VARIAVEL $C
 done
-echo -e "${LISTA[*]} -> lista/array montada com for"
+echo -e "${LISTA[*]} -> lista/array montada com for"    # MOSTRA CONTEUDO DA LISTA
+
+echo -e "\n"
+
+C=1
+while [ $C -le 10 ]; do                # ENQUANTO $C MENOR IGUAL A 10
+    echo -e "Número: $C"               # MOSTRE O NUMERO
+    let C++                            # INCREMENTE 1 AO CONTADOR
+done
+
