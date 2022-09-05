@@ -26,11 +26,24 @@ echo "---------------------------------------------------------"
 # [04] ALTERANDO, INSERINDO E REMOVENDO VALORES:
 
 MEU_ARRAY[2]='K'                                       # ALTERA O VALOR NA POSICAO 2 PARA  K 
-echo ${MEU_ARRAY[*]}                                   # MOSTRA TODO O ARRAYS
+echo "${MEU_ARRAY[*]} -> alterar 2"                    # MOSTRA TODO O ARRAYS
 
 MEU_ARRAY[5]='F'                                       # INSERIR NA POSICAO VAZIA 5 O VALOR F
-echo "${MEU_ARRAY[*]} -> "
+echo "${MEU_ARRAY[*]} -> inserindo F"
 
 unset MEU_ARRAY[2]                                     # REMOVER POSICAO 2
 echo "${MEU_ARRAY[*]} -> removido C"
 
+unset MEU_ARRAY                                        # REMOVER TODO O ARRAY
+echo "${MEU_ARRAY[*]} -> removido arrays!"    
+
+echo "---------------------------------------------------------"
+# EXEMPLOS COM LAÇO:
+
+echo -e "maria\njose\nroberto\npedro\njulio\njoao\njair" > /tmp/arquivox.txt
+C=0
+for N in $(cat /tmp/arquivox.txt); do
+    LISTA[$C]=$N
+    let C++
+done
+echo -e "${LISTA[*]} -> lista/array montada com for"
