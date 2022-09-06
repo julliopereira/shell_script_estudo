@@ -39,7 +39,7 @@ MEU_ARRAY+=( Z )                                       # ACRESCENTA/INCREMENTA Z
 echo -e "${MEU_ARRAY[*]} \t-> acrecentado Z"             
 
 unset MEU_ARRAY[2]                                     # REMOVER POSICAO 2
-echo -e "${MEU_ARRAY[*]} \t-> removido C"
+echo -e "${MEU_ARRAY[*]} \t-> removido K"
 
 unset MEU_ARRAY                                        # REMOVER TODO O ARRAY
 echo -e "${MEU_ARRAY[*]} \t\t-> removido arrays!"    
@@ -64,5 +64,5 @@ while [ $C -le 50 ]; do                # ENQUANTO $C MENOR IGUAL A 10
     LISTA+=($C)                        # REALIZA A MESMA ADICAO QUE ACIMA 
     let C++                            # INCREMENTE 1 AO CONTADOR
 done
-echo -e "${LISTA[*]}"                                     # MOSTRA CONTEUDO DA LISTA
+echo -e "Numeros de 1 a 50: \n${LISTA[*]}"                                     # MOSTRA CONTEUDO DA LISTA
 
