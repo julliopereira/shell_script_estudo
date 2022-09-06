@@ -22,7 +22,10 @@ for P in ${MEU_ARRAY[*]}; do                           # USANDO laço for PARA M
 done
 echo -e "\n"
 
-echo -e "${#MEU_ARRAY[*]} \t-> quantidade de posições"    # MOSTRA QUANTAS POSICOES TEM O ARRAYS
+echo -e "${#MEU_ARRAY[*]} \t-> quantidade de posições"      # MOSTRA QUANTAS POSICOES TEM O ARRAYS
+echo -e "${MEU_ARRAY[*]:2} \t-> mostrar de dois em diante"  # MOSTRA DA POSICAO 2 EM DIANTE
+echo -e "${MEU_ARRAY[*]:1:2} \t-> mostrar posicao 1 e 2"    # MOSTRA DA POSICAO 1 e 2
+echo -e "${MEU_ARRAY[*]: -1} \t-> mostrar a ultima posicao" # MOSTRA A ULTIMA POSICAO
 
 echo "---------------------------------------------------------"
 # [04] ALTERANDO, INSERINDO E REMOVENDO VALORES:
