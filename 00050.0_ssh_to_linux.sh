@@ -10,8 +10,7 @@ export SSHPASS				               # EXPORTAR A SENHA
 # LIMPAR A TELA:
 clear
 # COMANDOS A SEREM EXECUTADOS NA MAQUINA REMOTA:
-COMM="ip a; \
-	  hostnamectl; "
+COMM="date +%Y%m%d"
 #
 func_ssh () { 
     # INICIA SESSAO NAO SOLICITANDO OK PARA INCLUSAO EM knowhosts
