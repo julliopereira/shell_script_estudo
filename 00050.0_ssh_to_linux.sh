@@ -33,9 +33,9 @@ func_ssh () {
 #
 func_filtra () {
     # FILTRA APENAS AS LINHAS DE INTERFACE E IP 
-    #cat /tmp/$IP'comm' | egrep "^[0-9]:|inet" | grep -v "inet6" > /tmp/$IP'filtra_interf_ip'
+    #cat /tmp/$IP'command.txt' | egrep "^[0-9]:|inet" | grep -v "inet6" > /tmp/$IP'filtra_interf_ip'
     # FILTRA O NOME DA MAQUINA:
-    #cat /tmp/$IP'comm' | egrep "hostname" > /tmp/$IP'hostname'
+    #cat /tmp/$IP'command.txt' | egrep "hostname" > /tmp/$IP'hostname'
     echo
 }
 #
