@@ -101,7 +101,7 @@ func_err() {
 #
 func_mtu() {
     # [4] testar maximo MTU possível
-   MTU=64
+    MTU=64
     while [ $MTU -le 9000 ] ; do
         ping $IP -c 2 -i 0.2 -W 1 -M do -s $MTU > /dev/null
         if [ $? -eq 0 ]; then
@@ -119,7 +119,7 @@ func_mtu() {
                 else
                     echo -e "BREAK"
                     break
-                    
+
                 fi
             done
         fi
