@@ -25,25 +25,34 @@ func_help() {
     "
 }
 #
+func_data() {
+    # data e hora atual
+    DATA=$(date +%Y%m%d_%H:%M:%S)
+}
+#
 func_conn(){
     # conexão / tempo de resposta [méd] / qtd de pacotes recebidos
     clear
+    func_data
     MEDIA=$(cat /tmp/$IP'ping'.txt | egrep "rtt" | cut -d '=' -f 2 | cut -d '/' -f 2)
     RECEB=$(cat /tmp/$IP'ping'.txt | grep "received" | cut -d ',' -f 2 | awk -F ' ' '{print $1}')
-    echo -e "IP $STRO $IP $CLEAR:"
+    echo -e "IP $STRO $IP $CLEAR [data/hora: $DATA]:"
     echo -e "\t- Ping \t\t : OK "
-    echo -e "\t- Média\t\t : $MEDIA ms \t[ 10 x ]"
+    echo -e "\t- Média\t\t : $MEDIA ms "
     if [ $RECEB -eq 10 ]; then
-        echo -e "\t- Recebidos\t : $RECEB \t\t[ ?/10 ]"
+        echo -e "\t- Recebidos\t : $RECEB "
     else
-        echo -e "\t- Recebidos\t : $VERM $RECEB $CLEAR\t\t[ ?/10 ]"
+        echo -e "\t- Recebidos\t : $VERM $RECEB $CLEAR"
     fi
     echo -e "============================================================================="
 }
 #
 func_variacao() {
     # variacao entre o menor e maior tempo de resposta
-    echo -e ""
+    MIN=$(cat /tmp/$IP'ping'.txt | egrep "rtt" | cut -d '=' -f 2 | cut -d '/' -f 1)
+    MAX=$(cat /tmp/$IP'ping'.txt | egrep "rtt" | cut -d '=' -f 2 | cut -d '/' -f 3)
+    VARIACAO=$(bc<<<$MAX-$MIN)
+    echo -e "\t- Variação\t : $VARIACAO ms\t[ Max-Min ]" 
     echo -e "============================================================================="
 }
 #
@@ -78,12 +87,14 @@ else
                         2) func_conn; func_variacao ;;
                         3) func_conn; func_variacao; func_err ;;
                         4) func_conn; func_variacao; func_err; func_mtu ;;
+                        -h|--help) func_help ;;
                         *) echo -e "INFORMAÇÃO INCORRETA, TENTE NOVAMENTE..." ;;
                     esac
                 fi
             else
                 clear
-                echo -e "$STRO IP [ $IP ] NÃO ACESSÍVEL .... $CLEAR"
+                func_data
+                echo -e "[$DATA]\t $STRO IP [ $IP ] NÃO ACESSÍVEL .... $CLEAR"
             fi
         done
     fi
