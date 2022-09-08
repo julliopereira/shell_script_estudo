@@ -5,6 +5,26 @@ VERM="\033[47;37;5m"
 STRO="\033[47;30;5m"
 CLEAR="\033[m"
 #
+func_help() {
+    clear
+    echo -e "
+    Uso:    $(basename $0) [IP/NAME]... [opc]...
+            connection test with icmp packet
+
+
+            opc:
+                - 1 ,          connection status test
+                - 2 ,          variation between min and max time
+                - 3 ,          connection quality (packet losses)
+                - 4 ,          maximum MTU size
+                - h , --help   help
+
+
+            example:
+                $(basename $0) 10.0.2.105 3
+    "
+}
+#
 func_conn(){
     # conexão / tempo de resposta [méd] / qtd de pacotes recebidos
     clear
@@ -42,18 +62,28 @@ func_mtu() {
 #
 
 #
+case $1 in 
+    -h) func_help; break ;;
+esac
 if [ -z $1 ]; then 
-    echo -e "FAVOR DIGITAR UM DESTINO PARA REALIZAR TESTES ..."
-    #echo -e "PLEASE INPUT A TARGET TO REALIZE THE TEST"
-    #echo -e "POR FAVOR ANADIR UN DESTINO PARA SEGUIR LA EVALUACION"
+    func_help
 else
+
     for IP in $(echo $1); do
         ping $IP -c 10 -i 0.2 -W 1 > /tmp/$IP'ping'.txt
         if [ $? -eq 0 ]; then
-            case $2 in   
-                1) func_conn ;;
-                2) func_conn; 
-            esac 
+            if [ -z $2 ]; then 
+                func_conn
+            else
+                case $2 in   
+                    1) func_conn ;;
+                    2) func_conn; func_variacao ;;
+                    3) func_conn; func_variacao; func_err ;;
+                    4) func_conn; func_variacao; func_err; func_mtu ;;
+                    -h|--help) func_help ;;
+                    *) echo -e "INFORMAÇÃO INCORRETA, TENTE NOVAMENTE..." ;;
+                esac 
+            fi
         fi
     done
 fi
