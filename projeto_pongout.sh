@@ -8,7 +8,7 @@ CLEAR="\033[m"
 func_help() {
     clear
     echo -e "
-    Uso:    $(basename $0) [IP/NAME]... [opc]...
+    Use:    $(basename $0) [ip|name]... [opc]...
             connection test with icmp packet
 
 
@@ -61,31 +61,32 @@ func_mtu() {
 }
 #
 
-#
-case $1 in 
-    -h) func_help; break ;;
-esac
-if [ -z $1 ]; then 
+if [[ $1 == "-h"  ||  $1 == "--help" ]]; then
     func_help
 else
-
-    for IP in $(echo $1); do
-        ping $IP -c 10 -i 0.2 -W 1 > /tmp/$IP'ping'.txt
-        if [ $? -eq 0 ]; then
-            if [ -z $2 ]; then 
-                func_conn
+    if [ -z $1 ]; then 
+        func_help
+    else
+        for IP in $(echo $1); do
+            ping $IP -c 10 -i 0.2 -W 1 > /tmp/$IP'ping'.txt
+            if [ $? -eq 0 ]; then
+                if [ -z $2 ]; then 
+                    func_conn
+                else
+                    case $2 in   
+                        1) func_conn ;;
+                        2) func_conn; func_variacao ;;
+                        3) func_conn; func_variacao; func_err ;;
+                        4) func_conn; func_variacao; func_err; func_mtu ;;
+                        *) echo -e "INFORMAÇÃO INCORRETA, TENTE NOVAMENTE..." ;;
+                    esac
+                fi
             else
-                case $2 in   
-                    1) func_conn ;;
-                    2) func_conn; func_variacao ;;
-                    3) func_conn; func_variacao; func_err ;;
-                    4) func_conn; func_variacao; func_err; func_mtu ;;
-                    -h|--help) func_help ;;
-                    *) echo -e "INFORMAÇÃO INCORRETA, TENTE NOVAMENTE..." ;;
-                esac 
+                clear
+                echo -e "$STRO IP [ $IP ] NÃO ACESSÍVEL .... $CLEAR"
             fi
-        fi
-    done
+        done
+    fi
 fi
 #
 #rm -f /tmp/$IP'ping'.txt
