@@ -100,17 +100,37 @@ func_err() {
 }
 #
 func_mtu() {
-    # [5] testar maximo MTU possível
-    count=64
-    for MTU in ; do
+    # [4] testar maximo MTU possível
+   MTU=64
+    while [ $MTU -le 9000 ] ; do
         ping $IP -c 2 -i 0.2 -W 1 -M do -s $MTU > /dev/null
+        if [ $? -eq 0 ]; then
+            echo -e "PRI $TM $MTU"
+            TM=$MTU 
+            let MTU+=500
+        else
+            while [ $TM -lt $MTU ]; do
+                echo -e "SEG UM"
+                ping $IP -c 2 -i 0.2 -W 1 -M do -s $MTU > /dev/null
+                if [ $? -eq 0 ]; then
+                    echo -e "SEG $TM $MTU"
+                    TM=$MTU 
+                    let MTU+=1
+                else
+                    echo -e "BREAK"
+                    break
+                    
+                fi
+            done
+        fi
     done
-    echo -e "MTU\t:EM DESENVOLVIMENTO ..."
+    echo -e "TEST" 
+    # echo -e "MTU\t:EM DESENVOLVIMENTO ..."
     echo -e "============================================================================="
 }
 #
 func_trace() {
-    # [4] Traceroute até para o destino
+    # [5] Traceroute até para o destino
     echo -e "TRACE\t:EM DESENVOLVIMENTO ..."
     echo -e "============================================================================="
 }
@@ -138,7 +158,7 @@ else
                         1) func_conn ;;
                         2) func_conn; func_variacao ;;
                         3) func_conn; func_variacao; func_pkts; func_err ;;
-                        4) func_conn; func_variacao; func_pkts; func_err; func_trace ;;
+                        4) func_conn; func_variacao; func_pkts; func_err; func_mtu ;;
                         5) func_conn; func_variacao; func_pkts; func_err; func_mtu; func_trace ;;
                         -h|--help) func_help ;;
                         *) echo -e "INFORMAÇÃO INCORRETA, TENTE NOVAMENTE..." ;;
