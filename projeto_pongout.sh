@@ -30,6 +30,13 @@ func_help() {
     "
 }
 #
+func_servico() {
+    # coleta informaçoes do servico
+    echo -e -n "CIRCUITO\t\t: "; read SERV
+    echo -e -n "BANDWIDTH[Mbps]\t\t: "; read BW
+    echo -e "============================================================================="
+}
+#
 func_data() {
     # data e hora atual
     DATA=$(date +%Y%m%d_%H:%M:%S)
@@ -74,16 +81,17 @@ func_err() {
         if [ $RECEB -eq $PKTS ]; then
             echo -e "\t- Recebidos1\t : $RECEB \t\t[ $PKTS pkts | MTU: $SIZE ]"
         else
-            echo -e "\t- Recebidos1\t : $RECEB \t\t[ $PKTS pkts | MTU: $SIZE ]\t<<"
+            echo -e "\t- Recebidos1\t : $RECEB \t\t[ $PKTS pkts | MTU: $SIZE ]\t\t<<"
         fi
     done
+    echo -e "\t-------------------------------------------------------"
     for SIZE in 200 400 600 800 1000 1200 1300 1400; do
         ping $IP -c $PKTS -i 0.2 -W 1 -p FFFF -s $SIZE > /tmp/$IP'ping'.txt
         RECEB=$(cat /tmp/$IP'ping'.txt | grep "received" | cut -d ',' -f 2 | awk -F ' ' '{print $1}')
         if [ $RECEB -eq $PKTS ]; then
             echo -e "\t- Recebidos2\t : $RECEB \t\t[ $PKTS pkts | MTU: $SIZE ]"
         else
-            echo -e "\t- Recebidos2\t : $RECEB \t\t[ $PKTS pkts | MTU: $SIZE ]\t<<"
+            echo -e "\t- Recebidos2\t : $RECEB \t\t[ $PKTS pkts | MTU: $SIZE ]\t\t<<"
         fi
     done
     #echo -e "ERR\t:EM DESENVOLVIMENTO ..."
@@ -117,8 +125,10 @@ else
                     func_conn
                 else
                     clear
+                    func_data
                     echo -e "INICIO> $STRO $IP $CLEAR [data/hora: $DATA]:"
                     echo -e "============================================================================="
+                    func_servico
                     case $2 in   
                         1) func_conn ;;
                         2) func_conn; func_variacao ;;
@@ -141,9 +151,8 @@ else
     fi
 fi
 #
-#func_data
-#echo -e "FIM   > $STRO $IP $CLEAR [data/hora: $DATA]:"
-#rm -f /tmp/$IP'ping'.txt
+# rm -f /tmp/$IP'ping'.txt
+exit 0
 
 
 
