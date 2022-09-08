@@ -44,7 +44,7 @@ func_data() {
 #
 func_pkts() {
     # quantidade de pacotes para teste de erros
-    echo -e -n "\t- Quantidade de PACOTES encaminhados para teste de ERROS: "; read PKTS
+    echo -e -n "\t- TESTE de PERDAS de PACOTES [ Qde ]: "; read PKTS
 }
 #
 func_conn() {
@@ -75,7 +75,7 @@ func_err() {
     # [3] testar varios tamanhos de pacotes
     # mostrar quantos pacotes recebidos 
     echo -e ""
-    for SIZE in 200 400 600 800 1000 1200 1300 1400; do
+    for SIZE in 64 400 800 1100 1400; do
         ping $IP -c $PKTS -i 0.2 -W 1 -p AAAA -s $SIZE > /tmp/$IP'ping'.txt
         RECEB=$(cat /tmp/$IP'ping'.txt | grep "received" | cut -d ',' -f 2 | awk -F ' ' '{print $1}')
         if [ $RECEB -eq $PKTS ]; then
@@ -85,7 +85,7 @@ func_err() {
         fi
     done
     echo -e "\t-------------------------------------------------------"
-    for SIZE in 200 400 600 800 1000 1200 1300 1400; do
+    for SIZE in 64 400 800 1100 1400; do
         ping $IP -c $PKTS -i 0.2 -W 1 -p FFFF -s $SIZE > /tmp/$IP'ping'.txt
         RECEB=$(cat /tmp/$IP'ping'.txt | grep "received" | cut -d ',' -f 2 | awk -F ' ' '{print $1}')
         if [ $RECEB -eq $PKTS ]; then
