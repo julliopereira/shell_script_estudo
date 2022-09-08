@@ -22,6 +22,7 @@ func_help() {
                 - 2 ,          variation between min and max time
                 - 3 ,          connection quality (packet losses)
                 - 4 ,          maximum MTU size
+                - 5 ,          trace to destination
                 - h , --help   help
 
 
@@ -98,15 +99,19 @@ func_err() {
     echo -e "============================================================================="
 }
 #
-func_trace() {
-    # [4] Traceroute até para o destino
-    echo -e "TRACE\t:EM DESENVOLVIMENTO ..."
+func_mtu() {
+    # [5] testar maximo MTU possível
+    count=64
+    for MTU in ; do
+        ping $IP -c 2 -i 0.2 -W 1 -M do -s $MTU > /dev/null
+    done
+    echo -e "MTU\t:EM DESENVOLVIMENTO ..."
     echo -e "============================================================================="
 }
 #
-func_mtu() {
-    # [5] testar maximo MTU possível
-    echo -e "MTU\t:EM DESENVOLVIMENTO ..."
+func_trace() {
+    # [4] Traceroute até para o destino
+    echo -e "TRACE\t:EM DESENVOLVIMENTO ..."
     echo -e "============================================================================="
 }
 #
@@ -134,7 +139,7 @@ else
                         2) func_conn; func_variacao ;;
                         3) func_conn; func_variacao; func_pkts; func_err ;;
                         4) func_conn; func_variacao; func_pkts; func_err; func_trace ;;
-                        5) func_conn; func_variacao; func_pkts; func_err; func_trace; func_mtu ;;
+                        5) func_conn; func_variacao; func_pkts; func_err; func_mtu; func_trace ;;
                         -h|--help) func_help ;;
                         *) echo -e "INFORMAÇÃO INCORRETA, TENTE NOVAMENTE..." ;;
                     esac
