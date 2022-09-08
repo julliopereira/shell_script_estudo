@@ -35,13 +35,18 @@ func_data() {
     DATA=$(date +%Y%m%d_%H:%M:%S)
 }
 #
+func_pkts() {
+    # quantidade de pacotes para teste de erros
+    echo -e -n "\t- Quantidade de PACOTES encaminhados para teste de ERROS: "; read PKTS
+}
+#
 func_conn(){
     # [1] conexão / tempo de resposta [méd] / qtd de pacotes recebidos
     clear
     func_data
     MEDIA=$(cat /tmp/$IP'ping'.txt | egrep "rtt" | cut -d '=' -f 2 | cut -d '/' -f 2)
     RECEB=$(cat /tmp/$IP'ping'.txt | grep "received" | cut -d ',' -f 2 | awk -F ' ' '{print $1}')
-    echo -e "IP $STRO $IP $CLEAR [data/hora: $DATA]:"
+    echo -e "INICIO> $STRO $IP $CLEAR [data/hora: $DATA]:"
     echo -e "\t- Ping \t\t : OK "
     echo -e "\t- Média\t\t : $MEDIA ms \t[ $PKTS pkts ]"
     if [ $RECEB -eq $PKTS ]; then
@@ -63,9 +68,22 @@ func_variacao() {
 #
 func_err() {
     # [3] testar varios tamanhos de pacotes
-    # mostrar quantos pacotes recebidos ?/50
-    read -p "\t-Quantidade de PACOTES encaminhados para teste de ERROS" PKTS
-    ping $IP -c $PKTS -i 0.2 -W 1 > /tmp/$IP'ping'.txt
+    # mostrar quantos pacotes recebidos 
+    echo -e ""
+    ping $IP -c $PKTS -i 0.2 -W 1 -p AAAA > /tmp/$IP'ping'.txt
+    RECEB=$(cat /tmp/$IP'ping'.txt | grep "received" | cut -d ',' -f 2 | awk -F ' ' '{print $1}')
+    if [ $RECEB -eq $PKTS ]; then
+        echo -e "\t- Recebidos1\t : $RECEB \t\t[ $PKTS pkts ]"
+    else
+        echo -e "\t- Recebidos1\t : $RECEB \t\t[ $PKTS pkts ]\t<<"
+    fi
+    ping $IP -c $PKTS -i 0.2 -W 1 -p FFFF > /tmp/$IP'ping'.txt
+    RECEB=$(cat /tmp/$IP'ping'.txt | grep "received" | cut -d ',' -f 2 | awk -F ' ' '{print $1}')
+    if [ $RECEB -eq $PKTS ]; then
+        echo -e "\t- Recebidos2\t : $RECEB \t\t[ $PKTS pkts ]"
+    else
+        echo -e "\t- Recebidos2\t : $RECEB \t\t[ $PKTS pkts ]\t<<"
+    fi
     #echo -e "ERR\t:EM DESENVOLVIMENTO ..."
     echo -e "============================================================================="
 }
@@ -99,9 +117,9 @@ else
                     case $2 in   
                         1) func_conn ;;
                         2) func_conn; func_variacao ;;
-                        3) func_conn; func_variacao; func_err ;;
-                        4) func_conn; func_variacao; func_err; func_trace ;;
-                        5) func_conn; func_variacao; func_err; func_trace; func_mtu ;;
+                        3) func_conn; func_variacao; func_pkts; func_err ;;
+                        4) func_conn; func_variacao; func_pkts; func_err; func_trace ;;
+                        5) func_conn; func_variacao; func_pkts; func_err; func_trace; func_mtu ;;
                         -h|--help) func_help ;;
                         *) echo -e "INFORMAÇÃO INCORRETA, TENTE NOVAMENTE..." ;;
                     esac
@@ -116,6 +134,8 @@ else
     fi
 fi
 #
+func_data
+echo -e "FIM   > $STRO $IP $CLEAR [data/hora: $DATA]:"
 #rm -f /tmp/$IP'ping'.txt
 
 
