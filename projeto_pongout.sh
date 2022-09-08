@@ -40,13 +40,11 @@ func_pkts() {
     echo -e -n "\t- Quantidade de PACOTES encaminhados para teste de ERROS: "; read PKTS
 }
 #
-func_conn(){
+func_conn() {
     # [1] conexão / tempo de resposta [méd] / qtd de pacotes recebidos
-    clear
     func_data
     MEDIA=$(cat /tmp/$IP'ping'.txt | egrep "rtt" | cut -d '=' -f 2 | cut -d '/' -f 2)
     RECEB=$(cat /tmp/$IP'ping'.txt | grep "received" | cut -d ',' -f 2 | awk -F ' ' '{print $1}')
-    echo -e "INICIO> $STRO $IP $CLEAR [data/hora: $DATA]:"
     echo -e "\t- Ping \t\t : OK "
     echo -e "\t- Média\t\t : $MEDIA ms \t[ $PKTS pkts ]"
     if [ $RECEB -eq $PKTS ]; then
@@ -70,20 +68,24 @@ func_err() {
     # [3] testar varios tamanhos de pacotes
     # mostrar quantos pacotes recebidos 
     echo -e ""
-    ping $IP -c $PKTS -i 0.2 -W 1 -p AAAA > /tmp/$IP'ping'.txt
-    RECEB=$(cat /tmp/$IP'ping'.txt | grep "received" | cut -d ',' -f 2 | awk -F ' ' '{print $1}')
-    if [ $RECEB -eq $PKTS ]; then
-        echo -e "\t- Recebidos1\t : $RECEB \t\t[ $PKTS pkts ]"
-    else
-        echo -e "\t- Recebidos1\t : $RECEB \t\t[ $PKTS pkts ]\t<<"
-    fi
-    ping $IP -c $PKTS -i 0.2 -W 1 -p FFFF > /tmp/$IP'ping'.txt
-    RECEB=$(cat /tmp/$IP'ping'.txt | grep "received" | cut -d ',' -f 2 | awk -F ' ' '{print $1}')
-    if [ $RECEB -eq $PKTS ]; then
-        echo -e "\t- Recebidos2\t : $RECEB \t\t[ $PKTS pkts ]"
-    else
-        echo -e "\t- Recebidos2\t : $RECEB \t\t[ $PKTS pkts ]\t<<"
-    fi
+    for SIZE in 200 400 600 800 1000 1200 1300 1400; do
+        ping $IP -c $PKTS -i 0.2 -W 1 -p AAAA -s $SIZE > /tmp/$IP'ping'.txt
+        RECEB=$(cat /tmp/$IP'ping'.txt | grep "received" | cut -d ',' -f 2 | awk -F ' ' '{print $1}')
+        if [ $RECEB -eq $PKTS ]; then
+            echo -e "\t- Recebidos1\t : $RECEB \t\t[ $PKTS pkts | MTU: $SIZE ]"
+        else
+            echo -e "\t- Recebidos1\t : $RECEB \t\t[ $PKTS pkts | MTU: $SIZE ]\t<<"
+        fi
+    done
+    for SIZE in 200 400 600 800 1000 1200 1300 1400; do
+        ping $IP -c $PKTS -i 0.2 -W 1 -p FFFF -s $SIZE > /tmp/$IP'ping'.txt
+        RECEB=$(cat /tmp/$IP'ping'.txt | grep "received" | cut -d ',' -f 2 | awk -F ' ' '{print $1}')
+        if [ $RECEB -eq $PKTS ]; then
+            echo -e "\t- Recebidos2\t : $RECEB \t\t[ $PKTS pkts | MTU: $SIZE ]"
+        else
+            echo -e "\t- Recebidos2\t : $RECEB \t\t[ $PKTS pkts | MTU: $SIZE ]\t<<"
+        fi
+    done
     #echo -e "ERR\t:EM DESENVOLVIMENTO ..."
     echo -e "============================================================================="
 }
@@ -114,6 +116,9 @@ else
                 if [ -z $2 ]; then 
                     func_conn
                 else
+                    clear
+                    echo -e "INICIO> $STRO $IP $CLEAR [data/hora: $DATA]:"
+                    echo -e "============================================================================="
                     case $2 in   
                         1) func_conn ;;
                         2) func_conn; func_variacao ;;
@@ -124,6 +129,8 @@ else
                         *) echo -e "INFORMAÇÃO INCORRETA, TENTE NOVAMENTE..." ;;
                     esac
                 fi
+                func_data
+                echo -e "FIM   > $STRO $IP $CLEAR [data/hora: $DATA]:"
             else
                 clear
                 func_data
@@ -134,8 +141,8 @@ else
     fi
 fi
 #
-func_data
-echo -e "FIM   > $STRO $IP $CLEAR [data/hora: $DATA]:"
+#func_data
+#echo -e "FIM   > $STRO $IP $CLEAR [data/hora: $DATA]:"
 #rm -f /tmp/$IP'ping'.txt
 
 
