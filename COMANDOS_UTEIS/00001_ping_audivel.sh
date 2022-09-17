@@ -9,7 +9,7 @@
 #################################################################
 #
 # CONTROLE DE DIRETORIO: ========================================
-if [ ! -e log/ ]: then
+if [ ! -e log/ ]; then
     mkdir log
 fi
 #
@@ -23,17 +23,23 @@ FUSO=0
 #
 # FUNCOES: ======================================================
 func_data() {
-    DATA=$(date -d "$FUSO hour" +%Y%m%d_%H:%M:%S)
+    DATA=$(date -d "$FUSO hour" +%Y%m%d)
+    DATAS=$(date -d "$FUSO hour" +%Y%m%d_%H:%M:%S)
+}
+#
+func_filtra() {
+    for IP 
 }
 # MAIN: =========================================================
-for ((i=0;i<=$2;i++)); do
-    ping $IP -c 1 -i 0.5 -W 0.6 &> /dev/null
+# while true:               # COMENTAR A LINHA for LOGO ABAIXO PARA LOOP INFINITO
+for ((i=0;i<=$2;i++)); do   
+    ping $IP -c 2 -i 0.2 -W 0.5 &> /tmp/nes
     if [ $? -eq 0 ]; then
         func_data
-        echo -e "$i:\t[$DATA] \t: UP" > log/log$DATA.log
+        echo -e "[$DATAS]:$IP:UP" >> log/log$DATA.log
     else
         func_data
-        echo -e "$i:\t[$DATA] \t: DW \a" > log/log$DATA.log
+        echo -e "[$DATAS]:$IP:DW \a" >> log/log$DATA.log
     fi
 done
 
