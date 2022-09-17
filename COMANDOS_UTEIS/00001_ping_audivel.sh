@@ -7,11 +7,13 @@
 #                           COM NAO SUCESSO AUDIVEL GRAVANDO
 #                           RESULTADO EM ARQUIVOS down E up
 ################################################################
+#
+#INPUT ========================================================
 IP=$1
 NR=$2
 MTU=$3
 FUSO=0
-#
+#FUNCOES ======================================================
 func_data() {
     DATA=$(date -d "$FUSO hour" +%Y%m%d_%H:%M:%S)
 }
@@ -20,10 +22,11 @@ for ((i=0;i<=$2;i++)); do
     ping $IP -c 1 -i 0.25 -W 0.1 &> /dev/null
     if [ $? -eq 0 ]; then
         func_data
+        echo -e 
         echo -e "$i:\t[$DATA] \t: UP" > /dev/null
     else
         func_data
-        echo -e "$i:\t[$DATA] \t: DW \a"
+        echo -e "$i:\t[$DATA] \t: DW \a" > /dev/null
     fi
 done
 
