@@ -14,31 +14,34 @@ if [ ! -e log/ ]; then
 fi
 #
 # TRATAMENTO DE INPUT: ==========================================
-IP=$1
-NR=$2
-MTU=$3
+#IP=$1
+#NR=$2
+#MTU=$3
 #
 # DEFINICOES DE VARIAVEIS:
 FUSO=0
 #
 # FUNCOES: ======================================================
 func_data() {
-    DATA=$(date -d "$FUSO hour" +%Y%m%d)
-    DATAS=$(date -d "$FUSO hour" +%Y%m%d_%H:%M:%S)
+    DATA=$(date -d "$FUSO hour" +%Y%m%d)             # DATA DIA MES ANO
+    DATAS=$(date -d "$FUSO hour" +%Y%m%d_%H:%M:%S)   # DATA COM SEGUNDOS
 }
 #
 func_filtra() {
-    IP="cat /tmp/nes | cut -d ":" -f 1"
-    MTU="cat /tmp/nes | cut -d ":" -f 2"
-    TM="cat /tmp/nes | cut -d ":" -f 3"
-    TR="cat /tmp/nes | cut -d ":" -f 4"
-    NOME="cat /tmp/nes | cut -d ":" -f 5"
+    IP="echo -e "$linha" | cut -d ":" -f 1"          # IP
+    MTU="echo -e "$linha" | cut -d ":" -f 2"         # MTU
+    TM="echo -e "$linha" | cut -d ":" -f 3"          # TEMPO MEDIO
+    TR="echo -e "$linha" | cut -d ":" -f 4"          # TEMPO A REDUZIR
+    NOME="echo -e "$linha" | cut -d ":" -f 5"        # NOMES E INFORMACOES DIVERSAS
 }
+#
 # MAIN: =========================================================
 while true; do               # COMENTAR A LINHA for LOGO ABAIXO PARA LOOP INFINITO
 #for ((i=0;i<=$2;i++)); do
-    for linha in $(cat NEs | grep -v "#" > /tmp/nes); do
+    for linha in $(cat NES | grep -v "#" > /tmp/nes); do
+        echo -e "test"
         func_filtra
+        echo -e "$IP $MTU $TM $TR $NOME"
         ping $IP -c 2 -i 0.2 -W 0.5 &> /dev/null
         if [ $? -eq 0 ]; then
             func_data
