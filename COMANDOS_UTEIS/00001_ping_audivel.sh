@@ -8,7 +8,7 @@
 #                           RESULTADO EM ARQUIVOS down E up
 #################################################################
 #
-# CONTROLE DE DIRETORIO: ========================================
+# CONTROLE DE DIRETORIO E ARQUIVOS: =============================
 if [ ! -e log/ ]; then
     mkdir log
 fi
@@ -28,12 +28,18 @@ func_data() {
 }
 #
 func_filtra() {
-    for IP 
+    for linha in $(cat NEs | grep -v "#" > /tmp/nes); do 
+        IP="IP"
+        MTU="MTU MINIMO"
+        TM="TEMPO MEDIO DE RTT"
+        TR="REMPO A REDUZIR"
+        NOME="NOME OU INFORMACOES DO DESTINO"
+    done
 }
 # MAIN: =========================================================
 # while true:               # COMENTAR A LINHA for LOGO ABAIXO PARA LOOP INFINITO
 for ((i=0;i<=$2;i++)); do   
-    ping $IP -c 2 -i 0.2 -W 0.5 &> /tmp/nes
+    ping $IP -c 2 -i 0.2 -W 0.5 &> /dev/null
     if [ $? -eq 0 ]; then
         func_data
         echo -e "[$DATAS]:$IP:UP" >> log/log$DATA.log
