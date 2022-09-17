@@ -28,27 +28,30 @@ func_data() {
 }
 #
 func_filtra() {
-    IP="echo -e "$linha" | cut -d ":" -f 1"          # IP
-    MTU="echo -e "$linha" | cut -d ":" -f 2"         # MTU
-    TM="echo -e "$linha" | cut -d ":" -f 3"          # TEMPO MEDIO
-    TR="echo -e "$linha" | cut -d ":" -f 4"          # TEMPO A REDUZIR
-    NOME="echo -e "$linha" | cut -d ":" -f 5"        # NOMES E INFORMACOES DIVERSAS
+    IP=$(echo -e "$linha"| cut -d ":" -f 1)           # IP
+    MTU=$(echo -e "$linha" | cut -d ":" -f 2)         # MTU
+    TM=$(echo -e "$linha" | cut -d ":" -f 3)          # TEMPO MEDIO
+    TR=$(echo -e "$linha" | cut -d ":" -f 4)          # TEMPO A REDUZIR
+    NOME=$(echo -e "$linha" | cut -d ":" -f 5)        # NOMES E INFORMACOES DIVERSAS
+}
+#
+func_calculo_tempo() {
+    
 }
 #
 # MAIN: =========================================================
 while true; do               # COMENTAR A LINHA for LOGO ABAIXO PARA LOOP INFINITO
-#for ((i=0;i<=$2;i++)); do
-    for linha in $(cat NES | grep -v "#" > /tmp/nes); do
-        echo -e "test"
+    echo "teste1"
+    cat NES | grep -v "#" > /tmp/nes
+    for linha in $(cat /tmp/nes); do
         func_filtra
-        echo -e "$IP $MTU $TM $TR $NOME"
-        ping $IP -c 2 -i 0.2 -W 0.5 &> /dev/null
+        ping $IP -c 2 -i 0.2 -W 0.5 &> /tmp/
         if [ $? -eq 0 ]; then
             func_data
-            echo -e "[$DATAS]:$IP:UP" >> log/log$DATA.log
+            echo -e "[$DATAS]:$IP:UP:$MTU" >> log/log$DATA.log
         else
             func_data
-            echo -e "[$DATAS]:$IP:DW \a" >> log/log$DATA.log
+            echo -e "[$DATAS]:$IP:DW:$MTU \a" >> log/log$DATA.log
         fi
     done
 done
