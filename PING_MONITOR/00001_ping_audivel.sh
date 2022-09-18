@@ -79,10 +79,14 @@ while true; do               # LOOP INFINITO
             ping $IP -c 8 -i 0.2 -W 0.3 &> /dev/null
             if [ $? -eq 1 ]; then
                 func_data
-                echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:NOME=$NOME:>>CRITICO<< \a" >> log/log$DATA.log >> log/down.log
+                echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:NOME=$NOME:>>CRITICO<< " >> log/log$DATA.log 
+                cat log/down.log | grep $IP > /tmp/down
+                if [ -z /tmp/down ];then
+                    echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:NOME=$NOME:>>CRITICO<< \a" >> log/down.log
+                fi
             else
                 cat log/down.log | grep $IP > /tmp/down
-                if [ -z /tmp/down  ];then
+                if [ ! -z /tmp/down ];then
                     sed -i "/$IP/d" log/down.log
                 fi
             fi
