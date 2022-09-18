@@ -75,19 +75,20 @@ while true; do               # LOOP INFINITO
             func_calculo_tempo
             func_latencia
             echo -e "[$DATAS]:$IP:STATUS=UP:MTU=$MTU:LATENCIA=$MED"ms":LATENCIA_OK=$TEMPO:NOME=$NOME" >> log/log$DATA.log
+            ARQ=$(cat log/down.log | grep $IP > /tmp/down)
+            if [ -n "$ARQ" ];then
+                echo REMOVER DE DOWN
+                sed -i "/$IP/d" log/down.log
+            fi
         else
             ping $IP -c 8 -i 0.2 -W 0.3 &> /dev/null
             if [ $? -eq 1 ]; then
                 func_data
                 echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:NOME=$NOME:>>CRITICO<< " >> log/log$DATA.log 
-                cat log/down.log | grep $IP > /tmp/down
-                if [ -z /tmp/down ];then
+                ARQ=$(cat log/down.log | grep $IP > /tmp/down)
+                if [ -z "$ARQ" ];then
+                    echo ADICIONAR DOWN
                     echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:NOME=$NOME:>>CRITICO<< \a" >> log/down.log
-                fi
-            else
-                cat log/down.log | grep $IP > /tmp/down
-                if [ ! -z /tmp/down ];then
-                    sed -i "/$IP/d" log/down.log
                 fi
             fi
         fi
