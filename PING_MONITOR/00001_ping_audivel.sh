@@ -23,7 +23,6 @@ fi
 #IP=$1
 #NR=$2
 #MTU=$3
-
 #
 # DEFINICOES DE VARIAVEIS:
 FUSO=0                 # ALTERAR FUSO EX: -3 ou 3 ou -1 etc...
@@ -45,6 +44,7 @@ func_filtra() {
 }
 #
 func_calculo_tempo() {
+    # transforma 
     cat /tmp/evi | grep rtt | cut -d "=" -f 2| awk -F "/" '{print $2}' | grep "." > /tmp/med
     if [ -z /tmp/med ]; then
         MED=$(cat /tmp/med)
