@@ -8,6 +8,10 @@
 #                           RESULTADO EM ARQUIVOS down E up
 # SIST. OPERACIONAL:        LINUX
 #
+# v0.0                      2022-09-07                      
+#                               INICIO
+#
+#
 #################################################################
 #
 # CONTROLE DE DIRETORIO E ARQUIVOS: =============================
@@ -50,9 +54,9 @@ func_calculo_tempo() {
 #
 func_latencia() {
     if [ $MED -le $TM ]; then
-        TEMPO="!"
+        TEMPO="OK"
     else
-        TEMPO=">"
+        TEMPO=">>"
     fi
 }
 #
@@ -66,11 +70,10 @@ while true; do               # COMENTAR A LINHA for LOGO ABAIXO PARA LOOP INFINI
             func_data
             func_calculo_tempo
             func_latencia
-            echo -e "[$DATAS]:$IP:STATUS=UP:MTU=$MTU:LATENCIA=$MED"ms":LATENCIA_OK=$TEMPO" >> log/log$DATA.log
+            echo -e "[$DATAS]:$IP:STATUS=UP:MTU=$MTU:LATENCIA=$MED"ms":LATENCIA_OK=$TEMPO:NOME=$NOME" >> log/log$DATA.log
         else
             func_data
-            func_calculo_tempo
-            echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:CRITICO \a" >> log/log$DATA.log
+            echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:NOME=$NOME:>>CRITICO<< \a" >> log/log$DATA.log
         fi
     done
 done

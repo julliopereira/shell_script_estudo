@@ -1,0 +1,15 @@
+#!/bin/bash
+#
+# AUTHOR:                   JULIO C. PEREIRA
+# INICIO:                   2022-09-17
+# CONTATO:                  julliopereira@gmail.com
+# OBJETIVO:                 ZIP DOS ARQUIVOS DE ONTEM
+# SIST. OPERACIONAL:        LINUX
+#
+# v0.0                      2022-09-07                      
+#                               INICIO
+#
+#
+#################################################################
+#
+DATA=$(date -d "")
