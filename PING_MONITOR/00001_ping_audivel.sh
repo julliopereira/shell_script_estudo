@@ -23,11 +23,12 @@ fi
 #IP=$1
 #NR=$2
 #MTU=$3
-FREQ=0.2                # FREQUENCIA ENTRE CADA DISPARO ICMP
-AGUAR=0.5              # TEMPO DE ESPERA DE RESPOSTA DE ICMP
+
 #
 # DEFINICOES DE VARIAVEIS:
-FUSO=0
+FUSO=0                 # ALTERAR FUSO EX: -3 ou 3 ou -1 etc...
+FREQ=0.2               # FREQUENCIA ENTRE CADA DISPARO ICMP  (EM SEGUNDOS)
+AGUAR=0.5              # TEMPO DE ESPERA DE RESPOSTA DE ICMP (EM SEGUNDOS)
 #
 # FUNCOES: ======================================================
 func_data() {
@@ -61,7 +62,7 @@ func_latencia() {
 }
 #
 # MAIN: =========================================================
-while true; do               # COMENTAR A LINHA for LOGO ABAIXO PARA LOOP INFINITO
+while true; do               # LOOP INFINITO
     cat NES | grep -v "#" > /tmp/nes
     for linha in $(cat /tmp/nes); do
         func_filtra
@@ -79,5 +80,3 @@ while true; do               # COMENTAR A LINHA for LOGO ABAIXO PARA LOOP INFINI
 done
 
 
-# COMMANDO:
-# for ((i=0;i<1000;i++)); do ping 8.8.8.8 -c 1 -i 0.015 -W 0.005 &> /dev/null || echo -e "\a $i $?" ; done
