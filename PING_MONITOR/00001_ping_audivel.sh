@@ -19,6 +19,8 @@ fi
 #IP=$1
 #NR=$2
 #MTU=$3
+FREQ=0.2                # FREQUENCIA ENTRE CADA DISPARO ICMP
+AGUAR=0.5              # TEMPO DE ESPERA DE RESPOSTA DE ICMP
 #
 # DEFINICOES DE VARIAVEIS:
 FUSO=0
@@ -46,20 +48,29 @@ func_calculo_tempo() {
     fi
 }
 #
+func_latencia() {
+    if [ $MED -le $TM ]; then
+        TEMPO="!"
+    else
+        TEMPO=">"
+    fi
+}
+#
 # MAIN: =========================================================
 while true; do               # COMENTAR A LINHA for LOGO ABAIXO PARA LOOP INFINITO
     cat NES | grep -v "#" > /tmp/nes
     for linha in $(cat /tmp/nes); do
         func_filtra
-        ping $IP -c 1 -i 0.2 -W 0.5 &> /tmp/evi
+        ping $IP -c 2 -i $FREQ -W $AGUAR &> /tmp/evi
         if [ $? -eq 0 ]; then
             func_data
             func_calculo_tempo
-            echo -e "[$DATAS]:$IP:STATUS=UP:MTU=$MTU:LATENCIA=$MED"ms"" >> log/log$DATA.log
+            func_latencia
+            echo -e "[$DATAS]:$IP:STATUS=UP:MTU=$MTU:LATENCIA=$MED"ms":LATENCIA_OK=$TEMPO" >> log/log$DATA.log
         else
             func_data
             func_calculo_tempo
-            echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:CRITICO! \a" >> log/log$DATA.log
+            echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:CRITICO \a" >> log/log$DATA.log
         fi
     done
 done
