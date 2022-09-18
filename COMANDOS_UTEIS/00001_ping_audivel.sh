@@ -38,22 +38,28 @@ func_filtra() {
 }
 #
 func_calculo_tempo() {
-    cat /tmp/evi | grep rtt | cut -d "=" -f 2| awk -F "/" '{print $2}' 
+    cat /tmp/evi | grep rtt | cut -d "=" -f 2| awk -F "/" '{print $2}' | grep "." > /tmp/med
+    if [ -z /tmp/med ]; then
+        MED=$(cat /tmp/med)
+    else
+        MED=$(cat /tmp/med | cut -d "." -f 1)
+    fi
 }
 #
 # MAIN: =========================================================
 while true; do               # COMENTAR A LINHA for LOGO ABAIXO PARA LOOP INFINITO
-    echo "teste1"
     cat NES | grep -v "#" > /tmp/nes
     for linha in $(cat /tmp/nes); do
         func_filtra
-        ping $IP -c 2 -i 0.2 -W 0.5 &> /tmp/evi
+        ping $IP -c 1 -i 0.2 -W 0.5 &> /tmp/evi
         if [ $? -eq 0 ]; then
             func_data
-            echo -e "[$DATAS]:$IP:UP:$MTU" >> log/log$DATA.log
+            func_calculo_tempo
+            echo -e "[$DATAS]:$IP:STATUS=UP:MTU=$MTU:LATENCIA=$MED"ms"" >> log/log$DATA.log
         else
             func_data
-            echo -e "[$DATAS]:$IP:DW:$MTU \a" >> log/log$DATA.log
+            func_calculo_tempo
+            echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:CRITICO! \a" >> log/log$DATA.log
         fi
     done
 done
