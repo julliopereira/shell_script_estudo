@@ -3,7 +3,8 @@
 # AUTHOR:                   JULIO C. PEREIRA
 # INICIO:                   2022-09-17
 # CONTATO:                  julliopereira@gmail.com
-# OBJETIVO:                 ZIP DOS ARQUIVOS DE ONTEM
+# OBJETIVO:                 ZIP DO ARQUIVO DE ONTEM
+# INSTRUÇÃO:                AGENDAR EM /etc/crontab
 # SIST. OPERACIONAL:        LINUX
 #
 # v0.0                      2022-09-07                      
@@ -12,4 +13,7 @@
 #
 #################################################################
 #
-DATA=$(date -d "")
+DATA=$(date -d "-1 day" +%Y%m%d)
+if [ -e log$DATA.log ]; then
+    gzip -9 log$DATA.log 
+fi

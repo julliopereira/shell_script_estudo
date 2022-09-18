@@ -79,6 +79,5 @@ while true; do               # COMENTAR A LINHA for LOGO ABAIXO PARA LOOP INFINI
 done
 
 
-
 # COMMANDO:
 # for ((i=0;i<1000;i++)); do ping 8.8.8.8 -c 1 -i 0.015 -W 0.005 &> /dev/null || echo -e "\a $i $?" ; done
