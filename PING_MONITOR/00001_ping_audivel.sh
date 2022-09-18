@@ -83,10 +83,10 @@ while true; do               # LOOP INFINITO
             ping $IP -c 4 -i 0.2 -W 0.3 -M do -s $MTU &> /dev/null
             if [ $? -eq 1 ]; then
                 func_data
-                echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:NOME=$NOME:>>CRITICO<< \a" >> log/log$DATA.log 
+                echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:NOME=$NOME:>>CRITICO<< " >> log/log$DATA.log 
                 ARQ=$(cat log/down.log | grep "$IP")
                 if [ -z "$ARQ" ];then
-                    echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:NOME=$NOME:>>CRITICO<< \a" >> log/down.log
+                    echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:NOME=$NOME:>>CRITICO<< " >> log/down.log
                 fi
             fi
         fi
