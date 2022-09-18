@@ -31,11 +31,13 @@ AGUAR=0.5              # TEMPO DE ESPERA DE RESPOSTA DE ICMP (EM SEGUNDOS)
 #
 # FUNCOES: ======================================================
 func_data() {
+    # define data
     DATA=$(date -d "$FUSO hour" +%Y%m%d)             # DATA DIA MES ANO
     DATAS=$(date -d "$FUSO hour" +%Y%m%d_%H:%M:%S)   # DATA COM SEGUNDOS
 }
 #
 func_filtra() {
+    # filtra informações do arquivo NES neste mesmo diretório
     IP=$(echo -e "$linha"| cut -d ":" -f 1)           # IP
     MTU=$(echo -e "$linha" | cut -d ":" -f 2)         # MTU
     TM=$(echo -e "$linha" | cut -d ":" -f 3)          # TEMPO MEDIO
@@ -44,7 +46,7 @@ func_filtra() {
 }
 #
 func_calculo_tempo() {
-    # transforma 
+    # transforma a latência em numero inteiro ( em milissegundos )
     cat /tmp/evi | grep rtt | cut -d "=" -f 2| awk -F "/" '{print $2}' | grep "." > /tmp/med
     if [ -z /tmp/med ]; then
         MED=$(cat /tmp/med)
@@ -54,6 +56,7 @@ func_calculo_tempo() {
 }
 #
 func_latencia() {
+    # compara a latência do teste com a latência média de input
     if [ $MED -le $TM ]; then
         TEMPO="OK"
     else
@@ -66,17 +69,22 @@ while true; do               # LOOP INFINITO
     cat NES | grep -v "#" > /tmp/nes
     for linha in $(cat /tmp/nes); do
         func_filtra
-        ping $IP -c 2 -i $FREQ -W $AGUAR &> /tmp/evi
+        ping $IP -c 1 -i $FREQ -W $AGUAR &> /tmp/evi
         if [ $? -eq 0 ]; then
             func_data
             func_calculo_tempo
             func_latencia
             echo -e "[$DATAS]:$IP:STATUS=UP:MTU=$MTU:LATENCIA=$MED"ms":LATENCIA_OK=$TEMPO:NOME=$NOME" >> log/log$DATA.log
         else
-            func_data
-            echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:NOME=$NOME:>>CRITICO<< \a" >> log/log$DATA.log
+            ping $IP -c 8 -i 0.2 -W 0.3 &> /dev/null
+            if [ $? -eq 1 ]; then
+                func_data
+                echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:NOME=$NOME:>>CRITICO<< \a" >> log/log$DATA.log >> down$DATA.log
+            else
+                if [  ];then
+
+                fi
+            fi
         fi
     done
 done
-
-
