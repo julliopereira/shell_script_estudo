@@ -6,6 +6,8 @@
 # OBJETIVO:                 MONITORAR CONEXOES POR ICMP
 #                           COM NAO SUCESSO AUDIVEL GRAVANDO
 #                           RESULTADO EM ARQUIVOS down E up
+# SIST. OPERACIONAL:        LINUX
+#
 #################################################################
 #
 # CONTROLE DE DIRETORIO E ARQUIVOS: =============================
@@ -36,7 +38,7 @@ func_filtra() {
 }
 #
 func_calculo_tempo() {
-    
+    cat /tmp/evi | grep rtt | cut -d "=" -f 2| awk -F "/" '{print $2}' 
 }
 #
 # MAIN: =========================================================
@@ -45,7 +47,7 @@ while true; do               # COMENTAR A LINHA for LOGO ABAIXO PARA LOOP INFINI
     cat NES | grep -v "#" > /tmp/nes
     for linha in $(cat /tmp/nes); do
         func_filtra
-        ping $IP -c 2 -i 0.2 -W 0.5 &> /tmp/
+        ping $IP -c 2 -i 0.2 -W 0.5 &> /tmp/evi
         if [ $? -eq 0 ]; then
             func_data
             echo -e "[$DATAS]:$IP:UP:$MTU" >> log/log$DATA.log
