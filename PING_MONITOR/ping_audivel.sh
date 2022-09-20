@@ -20,9 +20,7 @@ if [ ! -e log/ ]; then
 fi
 #
 # TRATAMENTO DE INPUT: ==========================================
-#IP=$1
-#NR=$2
-#MTU=$3
+#
 #
 # DEFINICOES DE VARIAVEIS:
 FUSO=0                 # ALTERAR FUSO EX: -3 ou 3 ou -1 etc...
@@ -80,7 +78,7 @@ while true; do               # LOOP INFINITO
                 sed -i "/$IP/d" log/down.log
             fi
         else
-            ping $IP -c 4 -i 0.2 -W 0.3 -M do -s $MTU &> /dev/null
+            ping $IP -c 10 -i 0.2 -W 0.3 -M do -s $MTU &> /dev/null
             if [ $? -eq 1 ]; then
                 func_data
                 echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:NOME=$NOME:>>CRITICO<< " >> log/log$DATA.log 
