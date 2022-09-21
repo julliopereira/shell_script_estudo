@@ -11,6 +11,12 @@
 # v0.0                      2022-09-07                      
 #                               INICIO
 #
+# v0.1                      2022-09-21
+#                               REFATORADO logup logdown
+#
+#
+#
+#
 #
 #################################################################
 #
@@ -101,7 +107,7 @@ func_testperdas() {
     else
         func_data
         echo -e "[$DATAS]:$IP:STATUS=UP:MTU=$MTU:NOME=\e[5;33m$NOME\e[0m: \e[5;33m>>PERDA DE PACOTES<<\e[0m " >> log/log$DATA.log
-        echo -e "[$DATAS]:$IP:STATUS=UP:MTU=$MTU:NOME=$NOME:>>PERDA DE PACOTES<< " >> log/perdas.log
+        echo -e "[$DATAS]:$IP:STATUS=UP:MTU=$MTU:NOME=$NOME:>>PERDA DE PACOTES<< " >> log/loss$DATA.log
     fi
 }
 #
