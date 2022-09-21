@@ -105,6 +105,7 @@ func_testperdas() {
             echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:NOME=$NOME:>>CRITICO<< " >> log/down.log
         fi
     else
+        $(let RCV 
         func_data
         echo -e "[$DATAS]:$IP:STATUS=UP:MTU=$MTU:NOME=\e[5;33m$NOME\e[0m: \e[5;33m>>PERDA DE PACOTES<<\e[0m " >> log/log$DATA.log
         echo -e "[$DATAS]:$IP:STATUS=UP:MTU=$MTU:NOME=$NOME:>>PERDA DE PACOTES<< " >> log/loss$DATA.log
