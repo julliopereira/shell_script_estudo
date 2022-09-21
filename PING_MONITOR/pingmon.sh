@@ -62,6 +62,27 @@ func_latencia() {
     fi
 }
 #
+func_logup() {
+    echo -e "[$DATAS]:$IP:STATUS=UP:MTU=$MTU:LATENCIA=$MED"ms":LATENCIA_OK=$TEMPO:NOME=$NOME" >> log/log$DATA.log
+    ARQ=$(cat log/down.log | grep "$IP")
+    if [ -n "$ARQ" ];then
+        sed -i "/$IP/d" log/down.log
+    fi
+}
+#
+func_logdown() {
+    echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:NOME=$NOME:\033[31;5m>>CRITICO<<\033[m " >> log/log$DATA.log 
+    ARQ=$(cat log/down.log | grep "$IP")
+    if [ -z "$ARQ" ];then
+        echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:NOME=$NOME:\033[31;5m>>CRITICO<<\033[m " >> log/down.log
+    fi
+}
+#
+func_dwtest() {
+    func_data
+    ping $IP -c 10 -i 0.2 -W 0.3 -M do -s $MTU &> /tmp/dwtst
+}
+#
 # MAIN: =========================================================
 while true; do               # LOOP INFINITO
     cat NES | grep -v "#" > /tmp/nes
@@ -72,21 +93,24 @@ while true; do               # LOOP INFINITO
             func_data
             func_calculo_tempo
             func_latencia
-            echo -e "[$DATAS]:$IP:STATUS=UP:MTU=$MTU:LATENCIA=$MED"ms":LATENCIA_OK=$TEMPO:NOME=$NOME" >> log/log$DATA.log
-            ARQ=$(cat log/down.log | grep "$IP")
-            if [ -n "$ARQ" ];then
-                sed -i "/$IP/d" log/down.log
-            fi
+            func_logup
+            #echo -e "[$DATAS]:$IP:STATUS=UP:MTU=$MTU:LATENCIA=$MED"ms":LATENCIA_OK=$TEMPO:NOME=$NOME" >> log/log$DATA.log
+            #ARQ=$(cat log/down.log | grep "$IP")
+            #if [ -n "$ARQ" ];then
+            #    sed -i "/$IP/d" log/down.log
+            #fi
         else
-            ping $IP -c 10 -i 0.2 -W 0.3 -M do -s $MTU &> /dev/null
-            if [ $? -eq 1 ]; then
-                func_data
-                echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:NOME=$NOME:>>CRITICO<< " >> log/log$DATA.log 
-                ARQ=$(cat log/down.log | grep "$IP")
-                if [ -z "$ARQ" ];then
-                    echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:NOME=$NOME:>>CRITICO<< " >> log/down.log
-                fi
-            fi
+
+            #ping $IP -c 10 -i 0.2 -W 0.3 -M do -s $MTU &> /tmp/dwtst
+            #if [ $? -eq 1 ]; then
+            #    func_data
+            #    func_logdown
+                #echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:NOME=$NOME:>>CRITICO<< " >> log/log$DATA.log 
+                #ARQ=$(cat log/down.log | grep "$IP")
+                #if [ -z "$ARQ" ];then
+                #    echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:NOME=$NOME:>>CRITICO<< " >> log/down.log
+                #fi
+            #fi
         fi
     done
 done
