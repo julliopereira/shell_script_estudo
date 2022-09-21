@@ -65,7 +65,7 @@ func_latencia() {
 func_logup() {
     ARQ=$(cat log/down.log | grep "$IP")
     if [ -n "$ARQ" ];then
-        echo -e "[$DATAS]:$IP:STATUS=\e[5;32mUP\e[0m:MTU=$MTU:LATENCIA=$MED"ms":LAT=$TEMPO:NOME=$NOME" >> log/log$DATA.log
+        echo -e "[$DATAS]:$IP:STATUS=\e[5;32mUP\e[0m:MTU=$MTU:LATENCIA=$MED"ms":LAT=$TEMPO:NOME=\e[5;32m$NOME\e[0m" >> log/log$DATA.log
         sed -i "/$IP/d" log/down.log
     else 
         echo -e "[$DATAS]:$IP:STATUS=UP:MTU=$MTU:LATENCIA=$MED"ms":LAT=$TEMPO:NOME=$NOME" >> log/log$DATA.log
@@ -73,10 +73,10 @@ func_logup() {
 }
 #
 func_logdown() {
-    echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:NOME=$NOME:\e[5;31m>>CRITICO<<\e[0m " >> log/log$DATA.log 
+    echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:NOME=\e[5;31m$NOME\e[0m: \e[5;31m>>CRITICO<<\e[0m " >> log/log$DATA.log 
     ARQ=$(cat log/down.log | grep "$IP")
     if [ -z "$ARQ" ];then
-        echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:NOME=$NOME:>>CRITICO<< " >> log/down.log
+        echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:NOME=$NOME: >>CRITICO<< " >> log/down.log
     fi
 }
 #
@@ -95,12 +95,12 @@ func_testperdas() {
         ARQ=$(cat log/down.log | grep "$IP")
         if [ -z "$ARQ" ];then
             func_data
-            echo -e "[$DATAS]:$IP:STATUS=\e[31mDW\e[0m:MTU=$MTU:NOME=\e[5;31m$NOME: \e[5;31m>>CRITICO<<\e[0m " >> log/log$DATA.log
+            echo -e "[$DATAS]:$IP:STATUS=\e[31mDW\e[0m:MTU=$MTU:NOME=\e[5;31m$NOME\e[0m: \e[5;31m>>CRITICO<<\e[0m " >> log/log$DATA.log
             echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:NOME=$NOME:>>CRITICO<< " >> log/down.log
         fi
     else
         func_data
-        echo -e "[$DATAS]:$IP:STATUS=UP:MTU=$MTU:NOME=\e[5;33m$NOME\e[m: \e[5;33m>>PERDA DE PACOTES<<\e[0m " >> log/log$DATA.log
+        echo -e "[$DATAS]:$IP:STATUS=UP:MTU=$MTU:NOME=\e[5;33m$NOME\e[0m: \e[5;33m>>PERDA DE PACOTES<<\e[0m " >> log/log$DATA.log
         echo -e "[$DATAS]:$IP:STATUS=UP:MTU=$MTU:NOME=$NOME:>>PERDA DE PACOTES<< " >> log/perdas.log
     fi
 }
