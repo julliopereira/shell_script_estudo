@@ -32,7 +32,7 @@ fi
 FUSO=0                 # ALTERAR FUSO EX: -3 ou 3 ou -1 etc...
 FREQ=0.2               # FREQUENCIA ENTRE CADA DISPARO ICMP  (EM SEGUNDOS)
 AGUAR=0.5              # TEMPO DE ESPERA DE RESPOSTA DE ICMP (EM SEGUNDOS)
-PERDAS=10              # QUANTIDADES DE TESTES PARA REALIZAR TESTE DE PERDAS DE PACOTES
+QTY=40                 # QUANTIDADES DE TESTES PARA REALIZAR TESTE DE PERDAS DE PACOTES
 #
 # FUNCOES: ======================================================
 func_data() {
@@ -95,7 +95,7 @@ func_critico() {
 }
 #
 func_testperdas() {
-    ping $IP -c $PERDAS -i 0.2 -W 0.3 -M do -s $MTU > /tmp/dwtst
+    ping $IP -c $QTY -i 0.2 -W 0.3 -M do -s $MTU > /tmp/dwtst
     RCV=$(tail -n 3 /tmp/dwtst | grep received | cut -d ',' -f 2 | awk -F " " '{print $1}')
     if [ $RCV -eq 0 ]; then
         #echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:NOME=$NOME:\033[31;5m>>CRITICO<<\033[m " >> log/log$DATA.log
@@ -105,13 +105,13 @@ func_testperdas() {
             echo -e "[$DATAS]:$IP:STATUS=\e[31mDW\e[0m:MTU=$MTU:NOME=\e[5;31m$NOME\e[0m: \e[5;31m>>CRITICO<<\e[0m " >> log/log$DATA.log
             echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:NOME=$NOME:>>CRITICO<< " >> log/down.log
         fi
+    elif [ $RCV -eq $QTY ]; then
+        echo "" > /dev/null
     else
-        echo "RCV: $RCV"
-        rcv=$(echo "$PERDAS-$RCV" | bc)
-        echo "rcv: $rcv"
+        rcv=$(echo "$QTY-$RCV" | bc)
         func_data
-        echo -e "[$DATAS]:$IP:STATUS=UP:MTU=$MTU:PERDA=$rcv/$PERDAS:NOME=\e[5;33m$NOME\e[0m: \e[5;33m>>PERDA DE PACOTES<<\e[0m " >> log/log$DATA.log
-        echo -e "[$DATAS]:$IP:STATUS=UP:MTU=$MTU:PERDA=$rcv/$PERDAS:NOME=$NOME:>>PERDA DE PACOTES<< " >> log/loss$DATA.log
+        echo -e "[$DATAS]:$IP:STATUS=UP:MTU=$MTU:PERDA=$rcv/$QTY:NOME=\e[5;33m$NOME\e[0m: \e[5;33m>>PERDA DE PACOTES<<\e[0m " >> log/log$DATA.log
+        echo -e "[$DATAS]:$IP:STATUS=UP:MTU=$MTU:PERDA=$rcv/$QTY:NOME=$NOME:>>PERDA DE PACOTES<< " >> log/loss$DATA.log
     fi
 }
 #
