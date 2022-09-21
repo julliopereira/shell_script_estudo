@@ -78,9 +78,33 @@ func_logdown() {
     fi
 }
 #
+func_critico() {
+    ARQ=$(cat log/down.log | grep "$IP")
+    if [ -z "$ARQ" ];then
+        func_dwtst
+    fi
+}
+#
+func_perdas() {
+
+}
+#
 func_dwtest() {
-    func_data
-    ping $IP -c 10 -i 0.2 -W 0.3 -M do -s $MTU &> /tmp/dwtst
+    ping $IP -c 20 -i 0.2 -W 0.3 -M do -s $MTU &> /tmp/dwtst
+    RCV=$(tail -n 3 /tmp/dwtst | grep received | cut -d ',' -f 2 | awk -F " " '{print $1}')
+    if [ $RCV -eq 0 ]; then
+        #echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:NOME=$NOME:\033[31;5m>>CRITICO<<\033[m " >> log/log$DATA.log
+        ARQ=$(cat log/down.log | grep "$IP")
+        if [ -z "$ARQ" ];then
+            func_data
+            echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:NOME=$NOME:\033[31;5m>>CRITICO<<\033[m " >> log/log$DATA.log
+            echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:NOME=$NOME:\033[31;5m>>CRITICO<<\033[m " >> log/down.log
+        fi
+    else
+        func_data
+        echo -e "[$DATAS]:$IP:STATUS=UP:MTU=$MTU:NOME=$NOME:\033[33;5m>>PERDA DE PACOTES<<\033[m " >> log/log$DATA.log
+        echo -e "[$DATAS]:$IP:STATUS=UP:MTU=$MTU:NOME=$NOME:\033[33;5m>>PERDA DE PACOTES<<\033[m " >> log/perdas.log
+    fi
 }
 #
 # MAIN: =========================================================
@@ -100,7 +124,7 @@ while true; do               # LOOP INFINITO
             #    sed -i "/$IP/d" log/down.log
             #fi
         else
-
+            func_dwtest
             #ping $IP -c 10 -i 0.2 -W 0.3 -M do -s $MTU &> /tmp/dwtst
             #if [ $? -eq 1 ]; then
             #    func_data
