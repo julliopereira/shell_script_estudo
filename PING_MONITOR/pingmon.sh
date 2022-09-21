@@ -32,6 +32,7 @@ fi
 FUSO=0                 # ALTERAR FUSO EX: -3 ou 3 ou -1 etc...
 FREQ=0.2               # FREQUENCIA ENTRE CADA DISPARO ICMP  (EM SEGUNDOS)
 AGUAR=0.5              # TEMPO DE ESPERA DE RESPOSTA DE ICMP (EM SEGUNDOS)
+PERDAS=10              # QUANTIDADES DE TESTES PARA REALIZAR TESTE DE PERDAS DE PACOTES
 #
 # FUNCOES: ======================================================
 func_data() {
@@ -94,7 +95,7 @@ func_critico() {
 }
 #
 func_testperdas() {
-    ping $IP -c 20 -i 0.2 -W 0.3 -M do -s $MTU &> /tmp/dwtst
+    ping $IP -c $PERDAS -i 0.2 -W 0.3 -M do -s $MTU > /tmp/dwtst
     RCV=$(tail -n 3 /tmp/dwtst | grep received | cut -d ',' -f 2 | awk -F " " '{print $1}')
     if [ $RCV -eq 0 ]; then
         #echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:NOME=$NOME:\033[31;5m>>CRITICO<<\033[m " >> log/log$DATA.log
@@ -105,10 +106,12 @@ func_testperdas() {
             echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:NOME=$NOME:>>CRITICO<< " >> log/down.log
         fi
     else
-        $(let RCV 
+        echo "RCV: $RCV"
+        rcv=$(echo "$PERDAS-$RCV" | bc)
+        echo "rcv: $rcv"
         func_data
-        echo -e "[$DATAS]:$IP:STATUS=UP:MTU=$MTU:NOME=\e[5;33m$NOME\e[0m: \e[5;33m>>PERDA DE PACOTES<<\e[0m " >> log/log$DATA.log
-        echo -e "[$DATAS]:$IP:STATUS=UP:MTU=$MTU:NOME=$NOME:>>PERDA DE PACOTES<< " >> log/loss$DATA.log
+        echo -e "[$DATAS]:$IP:STATUS=UP:MTU=$MTU:PERDA=$rcv/$PERDAS:NOME=\e[5;33m$NOME\e[0m: \e[5;33m>>PERDA DE PACOTES<<\e[0m " >> log/log$DATA.log
+        echo -e "[$DATAS]:$IP:STATUS=UP:MTU=$MTU:PERDA=$rcv/$PERDAS:NOME=$NOME:>>PERDA DE PACOTES<< " >> log/loss$DATA.log
     fi
 }
 #
