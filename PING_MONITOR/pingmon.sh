@@ -32,7 +32,7 @@ fi
 FUSO=0                 # ALTERAR FUSO EX: -3 ou 3 ou -1 etc...
 FREQ=0.2               # FREQUENCIA ENTRE CADA DISPARO ICMP  (EM SEGUNDOS)
 AGUAR=0.5              # TEMPO DE ESPERA DE RESPOSTA DE ICMP (EM SEGUNDOS)
-QTY=40                 # QUANTIDADES DE TESTES PARA REALIZAR TESTE DE PERDAS DE PACOTES
+QTY=30                 # QUANTIDADES DE TESTES PARA REALIZAR TESTE DE PERDAS DE PACOTES
 #
 # FUNCOES: ======================================================
 func_data() {
