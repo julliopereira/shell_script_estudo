@@ -4,8 +4,8 @@
 # INICIO:                   2022-09-17
 # CONTATO:                  julliopereira@gmail.com
 # OBJETIVO:                 MONITORAR CONEXOES POR ICMP
-#                           COM NAO SUCESSO AUDIVEL GRAVANDO
-#                           RESULTADO EM ARQUIVOS down E up
+#                           COM DEFINIÇÃO DE MTU E MEDIA DE
+#                           LATÊNCIA
 # SIST. OPERACIONAL:        LINUX
 #
 # v0.0                      2022-09-07                      
@@ -61,7 +61,7 @@ func_calculo_tempo() {
 }
 #
 func_latencia() {
-    # compara a latência do teste com a latência média de input
+    # compara a latência do teste com a latência média de input que veio do arquivo NES
     if [ $MED -le $TM ]; then
         TEMPO="OK"
     else
@@ -70,6 +70,7 @@ func_latencia() {
 }
 #
 func_logup() {
+    # condição de teste ok 
     ARQ=$(cat log/down.log | grep "$IP")
     if [ -n "$ARQ" ];then
         echo -e "[$DATAS]:$IP:STATUS=\e[5;32mUP\e[0m:MTU=$MTU:LATENCIA=$MED"ms":LAT=$TEMPO:NOME=\e[5;32m$NOME\e[0m" >> log/log$DATA.log
@@ -80,6 +81,7 @@ func_logup() {
 }
 #
 func_logdown() {
+    # condição de teste com problema
     echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:NOME=\e[5;31m$NOME\e[0m: \e[5;31m>>CRITICO<<\e[0m " >> log/log$DATA.log 
     ARQ=$(cat log/down.log | grep "$IP")
     if [ -z "$ARQ" ];then
@@ -88,6 +90,7 @@ func_logdown() {
 }
 #
 func_critico() {
+    # teste de conectividade simples para serviços identificados como down
     ping $IP -c 1 -i 0.5 -W 1 -M do -s $MTU > /dev/null
     if [ $? -eq 0 ]; then
         func_logup
@@ -95,10 +98,10 @@ func_critico() {
 }
 #
 func_testperdas() {
+    # testes de perdas de pacotes e identificação de indisponibilidade
     ping $IP -c $QTY -i 0.2 -W 0.3 -M do -s $MTU > /tmp/dwtst
     RCV=$(tail -n 3 /tmp/dwtst | grep received | cut -d ',' -f 2 | awk -F " " '{print $1}')
     if [ $RCV -eq 0 ]; then
-        #echo -e "[$DATAS]:$IP:STATUS=DW:MTU=$MTU:NOME=$NOME:\033[31;5m>>CRITICO<<\033[m " >> log/log$DATA.log
         ARQ=$(cat log/down.log | grep "$IP")
         if [ -z "$ARQ" ];then
             func_data
