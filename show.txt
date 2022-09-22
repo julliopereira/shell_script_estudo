@@ -2,19 +2,55 @@ Trying 10.0.2.195...
 Connected to 10.0.2.195.
 Escape character is '^]'.
 Debian GNU/Linux 11
-julio
-lumen login: brahma01
+lumen login: julio
 Password: 
-a
+Linux lumen 5.13.19-2-pve #1 SMP PVE 5.13.19-4 (Mon, 29 Nov 2021 12:10:09 +0100) x86_64
 
-Login incorrect
-lumen login: pwd
-Password: 
-10.0.2.2
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
 
-Login incorrect
-lumen login: -c
-2
-
-Login incorrect
-lumen login: 
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Thu Sep 22 03:04:47 UTC 2022 on pts/4
+[?2004h]0;julio@lumen: ~[01;32mjulio@lumen[00m:[01;34m~[00m$ 
+[?2004l[?2004h]0;julio@lumen: ~[01;32mjulio@lumen[00m:[01;34m~[00m$ 
+[?2004l[?2004h]0;julio@lumen: ~[01;32mjulio@lumen[00m:[01;34m~[00m$ 
+[?2004l[?2004h]0;julio@lumen: ~[01;32mjulio@lumen[00m:[01;34m~[00m$ ip
+[?2004lUsage: ip [ OPTIONS ] OBJECT { COMMAND | help }
+       ip [ -force ] -batch filename
+where  OBJECT := { link | address | addrlabel | route | rule | neigh | ntable |
+                   tunnel | tuntap | maddress | mroute | mrule | monitor | xfrm |
+                   netns | l2tp | fou | macsec | tcp_metrics | token | netconf | ila |
+                   vrf | sr | nexthop | mptcp }
+       OPTIONS := { -V[ersion] | -s[tatistics] | -d[etails] | -r[esolve] |
+                    -h[uman-readable] | -iec | -j[son] | -p[retty] |
+                    -f[amily] { inet | inet6 | mpls | bridge | link } |
+                    -4 | -6 | -I | -D | -M | -B | -0 |
+                    -l[oops] { maximum-addr-flush-attempts } | -br[ief] |
+                    -o[neline] | -t[imestamp] | -ts[hort] | -b[atch] [filename] |
+                    -rc[vbuf] [size] | -n[etns] name | -N[umeric] | -a[ll] |
+                    -c[olor]}
+[?2004h]0;julio@lumen: ~[01;32mjulio@lumen[00m:[01;34m~[00m$ a
+[?2004l-bash: a: command not found
+[?2004h]0;julio@lumen: ~[01;32mjulio@lumen[00m:[01;34m~[00m$ \
+[?2004l[?2004h> pwd
+[?2004l/home/julio
+[?2004h]0;julio@lumen: ~[01;32mjulio@lumen[00m:[01;34m~[00m$ \
+[?2004l[?2004h> ping
+[?2004lping: usage error: Destination address required
+[?2004h]0;julio@lumen: ~[01;32mjulio@lumen[00m:[01;34m~[00m$ 10.0.2.2
+[?2004l-bash: 10.0.2.2: command not found
+[?2004h]0;julio@lumen: ~[01;32mjulio@lumen[00m:[01;34m~[00m$ -c
+[?2004l-bash: -c: command not found
+[?2004h]0;julio@lumen: ~[01;32mjulio@lumen[00m:[01;34m~[00m$ 2
+[?2004l-bash: 2: command not found
+[?2004h]0;julio@lumen: ~[01;32mjulio@lumen[00m:[01;34m~[00m$ -i
+[?2004l-bash: -i: command not found
+[?2004h]0;julio@lumen: ~[01;32mjulio@lumen[00m:[01;34m~[00m$ 0.2
+[?2004l-bash: 0.2: command not found
+[?2004h]0;julio@lumen: ~[01;32mjulio@lumen[00m:[01;34m~[00m$ -W
+[?2004l-bash: -W: command not found
+[?2004h]0;julio@lumen: ~[01;32mjulio@lumen[00m:[01;34m~[00m$ 0.3
+[?2004l-bash: 0.3: command not found
+[?2004h]0;julio@lumen: ~[01;32mjulio@lumen[00m:[01;34m~[00m$ 
