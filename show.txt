@@ -12,7 +12,7 @@ individual files in /usr/share/doc/*/copyright.
 
 Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
 permitted by applicable law.
-Last login: Thu Sep 22 03:04:47 UTC 2022 on pts/4
+Last login: Fri Sep 23 16:41:39 UTC 2022 on pts/3
 [?2004h]0;julio@lumen: ~[01;32mjulio@lumen[00m:[01;34m~[00m$ 
 [?2004l[?2004h]0;julio@lumen: ~[01;32mjulio@lumen[00m:[01;34m~[00m$ 
 [?2004l[?2004h]0;julio@lumen: ~[01;32mjulio@lumen[00m:[01;34m~[00m$ 
@@ -33,11 +33,9 @@ where  OBJECT := { link | address | addrlabel | route | rule | neigh | ntable |
                     -c[olor]}
 [?2004h]0;julio@lumen: ~[01;32mjulio@lumen[00m:[01;34m~[00m$ a
 [?2004l-bash: a: command not found
-[?2004h]0;julio@lumen: ~[01;32mjulio@lumen[00m:[01;34m~[00m$ \
-[?2004l[?2004h> pwd
+[?2004h]0;julio@lumen: ~[01;32mjulio@lumen[00m:[01;34m~[00m$ pwd
 [?2004l/home/julio
-[?2004h]0;julio@lumen: ~[01;32mjulio@lumen[00m:[01;34m~[00m$ \
-[?2004l[?2004h> ping
+[?2004h]0;julio@lumen: ~[01;32mjulio@lumen[00m:[01;34m~[00m$ ping
 [?2004lping: usage error: Destination address required
 [?2004h]0;julio@lumen: ~[01;32mjulio@lumen[00m:[01;34m~[00m$ 10.0.2.2
 [?2004l-bash: 10.0.2.2: command not found

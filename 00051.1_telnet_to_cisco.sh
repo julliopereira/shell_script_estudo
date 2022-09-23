@@ -12,7 +12,7 @@ read -s -p "password: " SENHA
 # FUNCOES:
 func_commandos() {
     for comm in $(cat telnet_cmds.txt); do
-        echo -e $comm ; sleep 2
+        echo -e "$comm" ; sleep 2
     done
 }
 #
