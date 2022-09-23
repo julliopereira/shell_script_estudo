@@ -1,3 +1,4 @@
+bash
 ip a 
 pwd 
-ping 10.0.2.2 -c 2 -i 0.2 -W 0.3 
+ping 10.0.2.2 
