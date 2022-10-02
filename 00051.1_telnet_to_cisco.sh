@@ -1,8 +1,5 @@
 #!/bin/bash
 #
-#
-#
-#
 # INPUTS:
 read -p "login: " LOGIN 
 read -s -p "password: " SENHA
@@ -21,5 +18,5 @@ func_commandos() {
     echo -e "$LOGIN"; sleep 1
     echo -e "$SENHA"; sleep 1
     func_commandos
- ) | telnet 10.0.2.195 > show.txt
+) | telnet 10.0.2.195 > show.txt
 
