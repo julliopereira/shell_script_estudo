@@ -1,34 +1,142 @@
-Trying 10.0.2.195...
-Connected to 10.0.2.195.
+Trying 10.0.3.2...
+Connected to 10.0.3.2.
 Escape character is '^]'.
-Debian GNU/Linux 11
-lumen login: julio
+
+
+User Access Verification
+
+Username: cisco
 Password: 
-Linux lumen 5.13.19-2-pve #1 SMP PVE 5.13.19-4 (Mon, 29 Nov 2021 12:10:09 +0100) x86_64
+Router#show ip route
+Codes: C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area 
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       o - ODR, P - periodic downloaded static route
 
-The programs included with the Debian GNU/Linux system are free software;
-the exact distribution terms for each program are described in the
-individual files in /usr/share/doc/*/copyright.
+Gateway of last resort is 10.0.3.1 to network 0.0.0.0
 
-Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
-permitted by applicable law.
-Last login: Fri Sep 23 17:26:25 UTC 2022 from localhost on pts/3
-[?2004h]0;julio@lumen: ~[01;32mjulio@lumen[00m:[01;34m~[00m$ bash
-[?2004l[?2004h]0;julio@lumen: ~[01;32mjulio@lumen[00m:[01;34m~[00m$ ip a 
-[?2004l1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
-    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-    inet 127.0.0.1/8 scope host lo
-       valid_lft forever preferred_lft forever
-    inet6 ::1/128 scope host 
-       valid_lft forever preferred_lft forever
-2: eth0@if91: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
-    link/ether c6:24:7a:72:82:a5 brd ff:ff:ff:ff:ff:ff link-netnsid 0
-    inet 10.0.2.195/24 brd 10.0.2.255 scope global eth0
-       valid_lft forever preferred_lft forever
-    inet6 fe80::c424:7aff:fe72:82a5/64 scope link 
-       valid_lft forever preferred_lft forever
-[?2004h]0;julio@lumen: ~[01;32mjulio@lumen[00m:[01;34m~[00m$ pwd 
-[?2004l/home/julio
-[?2004h]0;julio@lumen: ~[01;32mjulio@lumen[00m:[01;34m~[00m$ ping 10.0.2.2 
-[?2004lping: socket: Operation not permitted
-[?2004h]0;julio@lumen: ~[01;32mjulio@lumen[00m:[01;34m~[00m$ 
+     10.0.0.0/24 is subnetted, 1 subnets
+C       10.0.3.0 is directly connected, FastEthernet0/0
+S*   0.0.0.0/0 [1/0] via 10.0.3.1
+Router#show ip int br
+Interface                  IP-Address      OK? Method Status                Protocol
+FastEthernet0/0            10.0.3.2        YES manual up                    up      
+FastEthernet0/1            unassigned      YES unset  administratively down down    
+FastEthernet1/0            unassigned      YES unset  administratively down down    
+Router#terminal length 0
+Router#show run 
+Building configuration...
+
+Current configuration : 890 bytes
+!
+version 12.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname Router
+!
+boot-start-marker
+boot-end-marker
+!
+enable password 7 121A0C041104
+!
+no aaa new-model
+memory-size iomem 5
+ip cef
+!
+!
+!
+!
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+username cisco privilege 15 password 7 01100F175804
+archive
+ log config
+  hidekeys
+! 
+!
+!
+!
+!
+!
+!
+!
+interface FastEthernet0/0
+ ip address 10.0.3.2 255.255.255.0
+ duplex auto
+ speed auto
+!
+interface FastEthernet0/1
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+!
+interface FastEthernet1/0
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+!
+ip forward-protocol nd
+ip route 0.0.0.0 0.0.0.0 10.0.3.1
+!
+!
+ip http server
+no ip http secure-server
+!
+!
+!
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+line con 0
+line aux 0
+line vty 0 4
+ login local
+!
+!
+end
+
+Router#terminal lenght 25
+                    ^
+% Invalid input detected at '^' marker.
+
+Router#

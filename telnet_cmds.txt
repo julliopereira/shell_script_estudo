@@ -1,4 +1,6 @@
-bash
-ip a 
-pwd 
-ping 10.0.2.2 
+show ip route
+show ip int br
+terminal length 0
+show run 
+terminal length 25
+
