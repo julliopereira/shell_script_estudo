@@ -135,8 +135,5 @@ line vty 0 4
 !
 end
 
-Router#terminal lenght 25
-                    ^
-% Invalid input detected at '^' marker.
-
+Router#terminal length 25
 Router#
