@@ -18,7 +18,6 @@ func_commandos() {
 ( 
     echo -e "$LOGIN"
     echo -e "$SENHA"; sleep 1
-    
     func_commandos
 ) | telnet 10.0.3.2 > show.txt               # SALVA RESULTADO NO ARQUIVO show.txt
 cat show.txt                                 # MOSTRA CONTEUDO DO ARQUIVO show.txt
