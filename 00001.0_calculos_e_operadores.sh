@@ -9,7 +9,9 @@ let i++                                 # REALIZA MESMO CALCULO ACIMA {5}
 let i--                                 # DECREMENTA 1 DO VALOR RESULTADO NA CONTA ACIMA {4}
 let i-=1                                # DECREMENTA 1 DO VALOR RESULTADO NA CONTA ACIMA {3}
 let i*=5                                # MULTIPLICA POR 5 O VALOR RESULTADO NA CONTA ACIMA {15}
-
+echo $((2 + 1)) | bc                    # CALCULO SIMPLES 
+echo "5+1" | bc                         # CALCULO SIMPLES DE NUMEROS INTEIROS
+echo "5.123+1.345" | bc                 # CALCULO COM PONTO FLUTUANTE
 
 echo -e "i= $i"                         # MOSTRA O VALOR DE i
 
