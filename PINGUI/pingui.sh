@@ -20,26 +20,32 @@ IP=$1
 mtu() {
     MTU=8
     while [ $MTU -ne 0 ]; do
-        IP=$1
-        ping -c 1 -i 0.2 -M do -s $MTU $IP &> /dev/null
+        #IP=$1
+        ping -c 2 -i 0.2 -W 0.3 -M do -s $MTU $IP &> /dev/null
         if [ $? -eq 0 ]; then
             #echo -e "$IP MTU\t= $MTU"
             let MTU+=20
         else
             let MTU-=20
             while [ $MTU -ne 0 ]; do
-                ping -c 1 -i 0.2 -M do -s $MTU $IP &> /dev/null
+                ping -c 2 -i 0.2 -W 0.3 -M do -s $MTU $IP &> /dev/null
                 if [ $? -eq 0 ]; then
                     #echo -e "$IP MTU\t= $MTU"
                     let MTU+=1
                 else
                     let MTU-=1
-                    echo -e "$IP MTU\t= $MTU ( Max) "
-                    #MTU=0
+                    echo -e "MTU\t: $MTU bytes"
+                    MTU=0  
                 fi
             done
         fi
     done
+}
+#
+tempos() {
+    TEMPOMIN=$(ping 10.0.2.2 -c 2 -i 0.2 | grep rtt | cut -d "=" -f 2 | awk -F "/" '{print $1} | echo "" | bc ')
+    TEMPOMED=$(ping 10.0.2.2 -c 2 -i 0.2 | grep rtt | cut -d "=" -f 2 | awk -F "/" '{print $2}')
+    TEMPOMAX=$(ping 10.0.2.2 -c 2 -i 0.2 | grep rtt | cut -d "=" -f 2 | awk -F "/" '{print $3}')
 }
 #
 while [ ! -z $2 ] ; do
@@ -83,15 +89,17 @@ if [ ! -z $F ]; then
 else
     F=1
 fi
-echo -e "----------------------------------------[$(date +%H:%M:%S.%3N)]---------------------------------------------"
-A=$(date +%H%M%S%3N)
+echo -e "----------------------------------------[$(date +%H:%M:%S.%3N)]----------------------------------------------"
+#A=$(date +%H%M%S%3N)
 while [ $COUNT -le $C ]; do
-    ping $IP -c 1 -W $F > /dev/null
+    #ping $IP -c 1 -W $F > /dev/null
+    ping $IP -c 1 -W $F > /tmp/pingui
     if [ $? -eq 0 ]; then
-        if [ $LOOP -lt 99 ]; then
+        if [ $LOOP -lt 100 ]; then
             echo -ne "!"
             let LOOP++
             let SUCCESS++
+
         else
             LOOP=1
             echo -e "!"
@@ -110,10 +118,13 @@ while [ $COUNT -le $C ]; do
     fi 
     let COUNT++
 done
-echo -e "\n----------------------------------------[$(date +%H:%M:%S.%3N)]---------------------------------------------"
-Z=$(date +%H%M%S%3N)
-mtu
+echo -e "\r----------------------------------------[$(date +%H:%M:%S.%3N)]----------------------------------------------"
+#Z=$(date +%H%M%S%3N)
 echo -e "RETORNO\t: $SUCCESS"
 echo -e "PERDAS\t: $UNSUCCESS"
-echo -e "TEMPO\t: $(echo "$Z-$A" | bc) ms"
-echo -e "MTU\t: $MTU"
+tempos
+echo -e "TEMPO MIN\t: $TEMPOMIN"
+echo -e "TEMPO MED\t: $TEMPOMED"
+echo -e "TEMPO MAX\t: $TEMPOMAX"
+#echo -e "TEMPO\t: $(echo "$Z-$A" | bc) ms"
+mtu
