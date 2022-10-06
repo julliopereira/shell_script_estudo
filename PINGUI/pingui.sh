@@ -9,6 +9,9 @@
 #
 #
 COUNT=1
+LOOP=1
+SUCCESS=0
+UNSUCCESS=0
 IP=$1
 
 while [ ! -z $2 ] ; do
@@ -42,21 +45,42 @@ while [ ! -z $2 ] ; do
 done
 
 if [ ! -z $C ]; then
-    echo
+    echo -n
 else
     C=10
 fi
 
 if [ ! -z $F ]; then
-    echo
+    echo  
 else
     F=1
 fi
 
 while [ $COUNT -le $C ]; do
-    ping $IP -c 1 -W $F
+    ping $IP -c 1 -W $F > /dev/null
     if [ $? -eq 0 ]; then
-        
-    fi  
-
+        if [ $LOOP -lt 99 ]; then
+            echo -ne "!"
+            let LOOP++
+            let SUCCESS++
+        else
+            LOOP=1
+            echo -e "!"
+            let SUCCESS++
+        fi
+    else
+        if [ $LOOP -lt 99 ]; then
+            echo -ne "."
+            let LOOP++
+            let UNSUCCESS++
+        else
+            LOOP=1
+            echo -e "."
+            let UNSUCCESS++
+        fi
+    fi 
+    let COUNT++
 done
+echo -e "\n-------------------------------[resultado]-------------------------------------"
+echo -e "RETORNO\t: $SUCCESS"
+echo -e "PERDAS\t: $UNSUCCESS"
