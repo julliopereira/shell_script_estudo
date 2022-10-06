@@ -9,24 +9,45 @@
 #
 #
 COUNT=1
-IP=$2
 
 
-menu() {
-    case $1 in
-        -c) shift
-            if [ ! -z $1  ]; then
-                C=$1
-            else
-                echo "Não digitou a quantidade de pacotes."
-            fi
-            ;; 
-    esac
-}
-
-menu 
-echo quantidade $C 
-#while [ $COUNT -le $C ]; do
 
 
-#done
+case "$2" in
+    -c ) 
+        shift
+        delim="$2"
+        if [ ! -z $delim ]; then
+            C=$2
+        else
+            echo "Não digitou a quantidade de pacotes."
+        fi
+        ;;
+    -f )
+        shift
+        if [ ! -z $delim ]; then
+            F=$2
+        else
+            echo "Não digitou a quantidade de pacotes!" ; echo
+        fi
+        ;;        
+      *) 
+        echo -e "Opção incorreta !" ;
+        echo 
+        ;;
+esac
+
+if [ ! -z $C ]; then
+    echo
+else
+    C=10
+fi
+
+if [ ! -z $F ]; then
+    echo
+else
+    F=1
+fi
+
+ping $1 -c $C -i $F
+
