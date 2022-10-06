@@ -12,6 +12,10 @@ COUNT=1
 LOOP=1
 SUCCESS=0
 UNSUCCESS=0
+MIN=0
+MED=0
+MAX=0
+#
 if [ -z $1 ]; then
     break
 fi
@@ -34,7 +38,7 @@ mtu() {
                     let MTU+=1
                 else
                     let MTU-=1
-                    echo -e "MTU\t: $MTU bytes"
+                    echo -e "MTU\t\t: $MTU bytes"
                     MTU=0  
                 fi
             done
@@ -42,10 +46,10 @@ mtu() {
     done
 }
 #
-tempos() {
-    TEMPOMIN=$(ping 10.0.2.2 -c 2 -i 0.2 | grep rtt | cut -d "=" -f 2 | awk -F "/" '{print $1} | echo "" | bc ')
-    TEMPOMED=$(ping 10.0.2.2 -c 2 -i 0.2 | grep rtt | cut -d "=" -f 2 | awk -F "/" '{print $2}')
-    TEMPOMAX=$(ping 10.0.2.2 -c 2 -i 0.2 | grep rtt | cut -d "=" -f 2 | awk -F "/" '{print $3}')
+tempo() {
+    #TEMPOMIN=$(test=$(cat /tmp/pingui | grep rtt | cut -d "=" -f 2 | awk -F "/" '{print $1}') ; echo "$test-0" | bc )
+    #TEMPOMED=$(cat /tmp/pingui | grep rtt | cut -d "=" -f 2 | awk -F "/" '{print $2}')
+    TEMPOMAX=$(cat /tmp/pingui | grep rtt | cut -d "=" -f 2 | awk -F "/" '{print $3}')
 }
 #
 while [ ! -z $2 ] ; do
@@ -99,7 +103,14 @@ while [ $COUNT -le $C ]; do
             echo -ne "!"
             let LOOP++
             let SUCCESS++
-
+            tempo
+            if [ $(echo "$TEMPOMAX >= $MAX" | bc) -eq 1 ]; then
+                MAX="$TEMPOMAX"
+            fi
+            MED=$(echo "$TEMPOMAX+$TEMPOMAX" 
+            if [ $(echo "$TEMPOMAX <= $MIN" | bc) -eq 1 ]; then
+                MIN="$TEMPOMAX"
+            fi
         else
             LOOP=1
             echo -e "!"
@@ -118,13 +129,18 @@ while [ $COUNT -le $C ]; do
     fi 
     let COUNT++
 done
-echo -e "\r----------------------------------------[$(date +%H:%M:%S.%3N)]----------------------------------------------"
+echo -e "\n----------------------------------------[$(date +%H:%M:%S.%3N)]----------------------------------------------"
 #Z=$(date +%H%M%S%3N)
-echo -e "RETORNO\t: $SUCCESS"
-echo -e "PERDAS\t: $UNSUCCESS"
-tempos
-echo -e "TEMPO MIN\t: $TEMPOMIN"
-echo -e "TEMPO MED\t: $TEMPOMED"
-echo -e "TEMPO MAX\t: $TEMPOMAX"
-#echo -e "TEMPO\t: $(echo "$Z-$A" | bc) ms"
+echo -e "RETORNO\t\t: $SUCCESS"
+echo -e "PERDAS\t\t: $UNSUCCESS"
+echo -e "TEMPO MAX\t: $MAX"
+MED=$(echo "$MED/$COUNT" | bc)
+echo -e "TEMPO MAX\t: $MED"
+echo -e "TEMPO MAX\t: $MIN"
 mtu
+#tempos
+#echo -e "TEMPO MIN\t: $TEMPOMIN"
+#echo -e "TEMPO MED\t: $TEMPOMED"
+#echo -e "TEMPO MAX\t: $TEMPOMAX"
+#echo -e "TEMPO\t: $(echo "$Z-$A" | bc) ms"
+#mtu
