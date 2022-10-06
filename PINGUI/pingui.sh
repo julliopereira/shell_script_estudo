@@ -12,8 +12,36 @@ COUNT=1
 LOOP=1
 SUCCESS=0
 UNSUCCESS=0
+if [ -z $1 ]; then
+    break
+fi
 IP=$1
-
+#
+mtu() {
+    MTU=8
+    while [ $MTU -ne 0 ]; do
+        IP=$1
+        ping -c 1 -i 0.2 -M do -s $MTU $IP &> /dev/null
+        if [ $? -eq 0 ]; then
+            #echo -e "$IP MTU\t= $MTU"
+            let MTU+=20
+        else
+            let MTU-=20
+            while [ $MTU -ne 0 ]; do
+                ping -c 1 -i 0.2 -M do -s $MTU $IP &> /dev/null
+                if [ $? -eq 0 ]; then
+                    #echo -e "$IP MTU\t= $MTU"
+                    let MTU+=1
+                else
+                    let MTU-=1
+                    echo -e "$IP MTU\t= $MTU ( Max) "
+                    #MTU=0
+                fi
+            done
+        fi
+    done
+}
+#
 while [ ! -z $2 ] ; do
     #echo "valor de 2 : $2"
     
@@ -55,7 +83,8 @@ if [ ! -z $F ]; then
 else
     F=1
 fi
-
+echo -e "----------------------------------------[$(date +%H:%M:%S.%3N)]---------------------------------------------"
+A=$(date +%H%M%S%3N)
 while [ $COUNT -le $C ]; do
     ping $IP -c 1 -W $F > /dev/null
     if [ $? -eq 0 ]; then
@@ -81,6 +110,10 @@ while [ $COUNT -le $C ]; do
     fi 
     let COUNT++
 done
-echo -e "\n-------------------------------[resultado]-------------------------------------"
+echo -e "\n----------------------------------------[$(date +%H:%M:%S.%3N)]---------------------------------------------"
+Z=$(date +%H%M%S%3N)
+mtu
 echo -e "RETORNO\t: $SUCCESS"
 echo -e "PERDAS\t: $UNSUCCESS"
+echo -e "TEMPO\t: $(echo "$Z-$A" | bc) ms"
+echo -e "MTU\t: $MTU"
