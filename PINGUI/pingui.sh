@@ -148,7 +148,7 @@ while [ ! -z $2 ] ; do
             if [ ! -z $delim ]; then
                 C=$2
             else
-                echo "Não digitou a quantidade de pacotes."
+                echo "Não digitou a quantidade de pacotes." ; echo ; exit 1
             fi
             ;;
         -t )
@@ -157,7 +157,7 @@ while [ ! -z $2 ] ; do
             if [ ! -z $delim ]; then
                 F=$2
             else
-                echo "Não digitada frequência de envio!" ; echo
+                echo "Não digitada frequência de envio!" ; echo ; exit 1
             fi
             ;;   
         -m )
@@ -166,12 +166,12 @@ while [ ! -z $2 ] ; do
             if [ ! -z $delim ]; then
                 M=$2
             else
-                echo "Não especificado se deve testar MTU (s|n)!" ; echo
+                echo "Não especificado se deve testar MTU (s|n)!" ; echo ; exit 1
             fi
             ;;         
         *) 
             echo -e "Opção incorreta !" ;
-            echo 
+            echo exit 1
             ;;
     esac
     shift
@@ -183,3 +183,4 @@ rodar
 let COUNT--
 echo -e "\n----------------------------------------[$(date +%H:%M:%S.%3N)]----------------------------------------------"
 mostrar
+exit 0
