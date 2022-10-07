@@ -116,7 +116,7 @@ while [ $COUNT -le $C ]; do
     #ping $IP -c 1 -W $F > /dev/null
     ping $IP -c 1 -W $F  > /tmp/pingui
     if [ $? -eq 0 ]; then
-        if [ $LOOP -le 100 ]; then
+        if [ $LOOP -lt 100 ]; then
             echo -ne "!"
             let LOOP++
             let SUCCESS++
@@ -129,7 +129,7 @@ while [ $COUNT -le $C ]; do
                 MIN="$TEMPOMAX"
             fi
         else
-            LOOP=1
+            LOOP=0
             echo -e "!"
             let LOOP++
             let SUCCESS++
@@ -143,12 +143,12 @@ while [ $COUNT -le $C ]; do
             fi
         fi
     else
-        if [ $LOOP -le 100 ]; then
+        if [ $LOOP -lt 100 ]; then
             echo -ne "."
             let LOOP++
             let UNSUCCESS++
         else
-            LOOP=1
+            LOOP=0
             echo -e "."
             let LOOP++
             let UNSUCCESS++
@@ -156,8 +156,10 @@ while [ $COUNT -le $C ]; do
     fi 
     let COUNT++
 done
+let COUNT--
 echo -e "\n----------------------------------------[$(date +%H:%M:%S.%3N)]----------------------------------------------"
 #Z=$(date +%H%M%S%3N)
+#echo "count $COUNT success $SUCCESS unsuccess $UNSUCCESS"
 PERCSU=$(echo "($SUCCESS*100)/$COUNT" | bc)
 PERCUN=$(echo "($UNSUCCESS*100)/$COUNT" | bc)
 echo -e "RETORNO\t\t: $SUCCESS\t ($PERCSU %)"
