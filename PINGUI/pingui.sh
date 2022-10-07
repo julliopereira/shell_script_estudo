@@ -38,7 +38,9 @@ mtu() {
                     let MTU+=1
                 else
                     let MTU-=1
-                    echo -e "MTU\t\t: $MTU bytes"
+                    if [ $MTU -ge 0 ]; then
+                        echo -e "MTU\t\t: $MTU bytes"
+                    fi
                     MTU=0  
                 fi
             done
@@ -120,6 +122,9 @@ while [ $COUNT -le $C ]; do
                 MAX="$TEMPOMAX"
             fi
             MED=$(echo "$TEMPOMAX+$MED" | bc)
+            if [ $(echo "$TEMPOMAX <= $MIN" | bc) -eq 1 ]; then
+                MIN="$TEMPOMAX"
+            fi
         fi
     else
         if [ $LOOP -lt 99 ]; then
@@ -136,14 +141,17 @@ while [ $COUNT -le $C ]; do
 done
 echo -e "\n----------------------------------------[$(date +%H:%M:%S.%3N)]----------------------------------------------"
 #Z=$(date +%H%M%S%3N)
-echo -e "RETORNO\t\t: $SUCCESS"
-echo -e "PERDAS\t\t: $UNSUCCESS"
+PERCSU=$(echo "($SUCCESS*100)/$COUNT" | bc)
+PERCUN=$(echo "($UNSUCCESS*100)/$COUNT" | bc)
+echo -e "RETORNO\t\t: $SUCCESS\t ($PERCSU %)"
+echo -e "PERDAS\t\t: $UNSUCCESS\t ($PERCUN %)"
 
 #echo -e "TEMPO MIN\t: $MIN ms"
 if [ $SUCCESS -ne 0 ]; then
     echo -e "TEMPO MAX\t: $MAX ms"
     MED=$(echo "$MED/$COUNT" | bc)
     echo -e "TEMPO MED\t: $MED ms"
+    echo -e "TEMPO MIN\t: $MIN ms"
     mtu
 fi
 #tempos
