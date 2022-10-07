@@ -67,15 +67,24 @@ while [ ! -z $2 ] ; do
                 echo "Não digitou a quantidade de pacotes."
             fi
             ;;
-        -f )
+        -t )
             shift
             delim="$2"
             if [ ! -z $delim ]; then
                 F=$2
             else
-                echo "Não a frequência de envio!" ; echo
+                echo "Não digitada frequência de envio!" ; echo
             fi
-            ;;        
+            ;;   
+        -m )
+            shift
+            delim="$2"
+            if [ ! -z $delim ]; then
+                M=$2
+            else
+                echo "Não especificado se deve testar MTU (s|n)!" ; echo
+            fi
+            ;;         
         *) 
             echo -e "Opção incorreta !" ;
             echo 
@@ -91,17 +100,23 @@ else
 fi
 
 if [ ! -z $F ]; then
-    echo  
+    echo  -n
 else
     F=1
+fi
+
+if [ ! -z $M ]; then
+    M=$(echo "$M" | tr '[:upper:]' '[:lower:]')
+else
+    M=n
 fi
 echo -e "----------------------------------------[$(date +%H:%M:%S.%3N)]----------------------------------------------"
 #A=$(date +%H%M%S%3N)
 while [ $COUNT -le $C ]; do
     #ping $IP -c 1 -W $F > /dev/null
-    ping $IP -c 1 -W $F > /tmp/pingui
+    ping $IP -c 1 -W $F  > /tmp/pingui
     if [ $? -eq 0 ]; then
-        if [ $LOOP -lt 100 ]; then
+        if [ $LOOP -le 100 ]; then
             echo -ne "!"
             let LOOP++
             let SUCCESS++
@@ -116,6 +131,7 @@ while [ $COUNT -le $C ]; do
         else
             LOOP=1
             echo -e "!"
+            let LOOP++
             let SUCCESS++
             tempo
             if [ $(echo "$TEMPOMAX >= $MAX" | bc) -eq 1 ]; then
@@ -127,13 +143,14 @@ while [ $COUNT -le $C ]; do
             fi
         fi
     else
-        if [ $LOOP -lt 99 ]; then
+        if [ $LOOP -le 100 ]; then
             echo -ne "."
             let LOOP++
             let UNSUCCESS++
         else
             LOOP=1
             echo -e "."
+            let LOOP++
             let UNSUCCESS++
         fi
     fi 
@@ -145,18 +162,13 @@ PERCSU=$(echo "($SUCCESS*100)/$COUNT" | bc)
 PERCUN=$(echo "($UNSUCCESS*100)/$COUNT" | bc)
 echo -e "RETORNO\t\t: $SUCCESS\t ($PERCSU %)"
 echo -e "PERDAS\t\t: $UNSUCCESS\t ($PERCUN %)"
-
-#echo -e "TEMPO MIN\t: $MIN ms"
 if [ $SUCCESS -ne 0 ]; then
     echo -e "TEMPO MAX\t: $MAX ms"
     MED=$(echo "$MED/$COUNT" | bc)
     echo -e "TEMPO MED\t: $MED ms"
     echo -e "TEMPO MIN\t: $MIN ms"
-    mtu
+    if [ "$M" == "s" ]; then
+        mtu
+    fi
 fi
-#tempos
-#echo -e "TEMPO MIN\t: $TEMPOMIN"
-#echo -e "TEMPO MED\t: $TEMPOMED"
-#echo -e "TEMPO MAX\t: $TEMPOMAX"
-#echo -e "TEMPO\t: $(echo "$Z-$A" | bc) ms"
-#mtu
+
