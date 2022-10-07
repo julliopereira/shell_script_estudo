@@ -15,7 +15,6 @@ UNSUCCESS=0
 MIN=1000
 MED=0
 MAX=0
-#
 IP=$1
 #
 mtu() {
@@ -45,11 +44,50 @@ mtu() {
     done
 }
 #
+mostrar() {
+    PERCSU=$(echo "($SUCCESS*100)/$COUNT" | bc)
+    PERCUN=$(echo "($UNSUCCESS*100)/$COUNT" | bc)
+    echo -e "DESTINO\t\t: $IP"
+    echo -e "RETORNO\t\t: $SUCCESS\t ($PERCSU %)"
+    echo -e "PERDAS\t\t: $UNSUCCESS\t ($PERCUN %)"
+    if [ $SUCCESS -ne 0 ]; then
+        echo -e "TEMPO MAX\t: $MAX ms"
+        MED=$(echo "$MED/$COUNT" | bc)
+        echo -e "TEMPO MED\t: $MED ms"
+        echo -e "TEMPO MIN\t: $MIN ms"
+        if [ "$M" == "s" ]; then
+            mtu
+        fi
+    fi
+}
+#
 tempo() {
     #TEMPOMIN=$(test=$(cat /tmp/pingui | grep rtt | cut -d "=" -f 2 | awk -F "/" '{print $1}') ; echo "$test-0" | bc )
     #TEMPOMED=$(cat /tmp/pingui | grep rtt | cut -d "=" -f 2 | awk -F "/" '{print $2}')
     TEMPOMAX=$(cat /tmp/pingui$data | grep rtt | cut -d "=" -f 2 | awk -F "/" '{print $3}')
 }
+#
+opcoes() {
+    if [ ! -z $C ]; then
+        echo -n
+    else
+        C=10
+    fi
+
+    if [ ! -z $F ]; then
+        echo  -n
+    else
+        F=1
+    fi
+
+    if [ ! -z $M ]; then
+        M=$(echo "$M" | tr '[:upper:]' '[:lower:]')
+    else
+        M=n
+    fi
+}
+#
+
 #
 while [ ! -z $2 ] ; do
     #echo "valor de 2 : $2"
@@ -90,27 +128,10 @@ while [ ! -z $2 ] ; do
     shift
 done
 
-if [ ! -z $C ]; then
-    echo -n
-else
-    C=10
-fi
+opcoes
 
-if [ ! -z $F ]; then
-    echo  -n
-else
-    F=1
-fi
-
-if [ ! -z $M ]; then
-    M=$(echo "$M" | tr '[:upper:]' '[:lower:]')
-else
-    M=n
-fi
 echo -e "----------------------------------------[$(date +%H:%M:%S.%3N)]----------------------------------------------"
-#A=$(date +%H%M%S%3N)
 while [ $COUNT -le $C ]; do
-    #ping $IP -c 1 -W $F > /dev/null
     data=$(date +%H%M%S%N)
     ping $IP -c 1 -W $F  > /tmp/pingui$data
     if [ $? -eq 0 ]; then
@@ -157,20 +178,5 @@ while [ $COUNT -le $C ]; do
 done
 let COUNT--
 echo -e "\n----------------------------------------[$(date +%H:%M:%S.%3N)]----------------------------------------------"
-#Z=$(date +%H%M%S%3N)
-#echo "count $COUNT success $SUCCESS unsuccess $UNSUCCESS"
-PERCSU=$(echo "($SUCCESS*100)/$COUNT" | bc)
-PERCUN=$(echo "($UNSUCCESS*100)/$COUNT" | bc)
-echo -e "DESTINO\t\t: $IP"
-echo -e "RETORNO\t\t: $SUCCESS\t ($PERCSU %)"
-echo -e "PERDAS\t\t: $UNSUCCESS\t ($PERCUN %)"
-if [ $SUCCESS -ne 0 ]; then
-    echo -e "TEMPO MAX\t: $MAX ms"
-    MED=$(echo "$MED/$COUNT" | bc)
-    echo -e "TEMPO MED\t: $MED ms"
-    echo -e "TEMPO MIN\t: $MIN ms"
-    if [ "$M" == "s" ]; then
-        mtu
-    fi
-fi
 
+mostrar
