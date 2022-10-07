@@ -17,7 +17,7 @@ echo "---------------------------------------------------------"
 # [03] MOSTRANDO VALORES ESPECIFICOS DE UM ARRAYS:
 
 echo -e "${MEU_ARRAY[2]} \t-> valor da posicao 2"        # MOSTRA VALOR NA POSICAO 2
-for P in ${MEU_ARRAY[*]}; do                           # USANDO laço for PARA MOSTRAR O CONTEÚDO
+for P in ${MEU_ARRAY[*]}; do                             # USANDO laço for PARA MOSTRAR O CONTEÚDO
     echo -e -n "$P" 
 done
 echo -e "\n"
@@ -59,7 +59,7 @@ unset LISTA
 echo -e "\n"
 
 C=1
-while [ $C -le 50 ]; do                # ENQUANTO $C MENOR IGUAL A 10
+while [ $C -le 50 ]; do                # ENQUANTO $C MENOR IGUAL A 50
     #LISTA[$C]="$C"                    # ADICIONA NUMERO $C NA ARRAYS
     LISTA+=($C)                        # REALIZA A MESMA ADICAO QUE ACIMA 
     let C++                            # INCREMENTE 1 AO CONTADOR

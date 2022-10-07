@@ -1,13 +1,18 @@
 #!/bin/bash
 #
-# AUTHOR            : JULIO CESAR PEREIRA           
-# OBJETIVO          : PING VISUAL
+# AUTHOR            : JULIO C. PEREIRA       
+# CONTATO           : JULLIOPEREIRA@GMAIL.COM    
+# OBJETIVO          : DISPARO DE ICMP
 # 
-# v1.0 2022-09-21     Julio C. Pereira
-#   -  
+# v0.1 2022-09-21   Julio C. Pereira
+#   - Iniciado
+#
+# v1.0 2022-09-07   Julio C. Pereira   
+#   - Adicionado funções
 #
 #
 #
+# ----------------------------[VARIAVEIS]----------------------------
 COUNT=1
 LOOP=1
 SUCCESS=0
@@ -16,7 +21,7 @@ MIN=1000
 MED=0
 MAX=0
 IP=$1
-#
+# -----------------------------[FUNÇÕES]-----------------------------
 mtu() {
     MTU=8
     while [ $MTU -ne 0 ]; do
@@ -87,11 +92,55 @@ opcoes() {
     fi
 }
 #
-
-#
+rodar() {
+    while [ $COUNT -le $C ]; do
+        data=$(date +%H%M%S%N)
+        ping $IP -c 1 -W $F  > /tmp/pingui$data
+        if [ $? -eq 0 ]; then
+            if [ $LOOP -lt 100 ]; then
+                echo -ne "!"
+                let LOOP++
+                let SUCCESS++
+                tempo
+                if [ $(echo "$TEMPOMAX >= $MAX" | bc) -eq 1 ]; then
+                    MAX="$TEMPOMAX"
+                fi
+                MED=$(echo "$TEMPOMAX+$MED" | bc)
+                if [ $(echo "$TEMPOMAX <= $MIN" | bc) -eq 1 ]; then
+                    MIN="$TEMPOMAX"
+                fi
+            else
+                LOOP=0
+                echo -e "!  $COUNT"
+                let LOOP++
+                let SUCCESS++
+                tempo
+                if [ $(echo "$TEMPOMAX >= $MAX" | bc) -eq 1 ]; then
+                    MAX="$TEMPOMAX"
+                fi
+                MED=$(echo "$TEMPOMAX+$MED" | bc)
+                if [ $(echo "$TEMPOMAX <= $MIN" | bc) -eq 1 ]; then
+                    MIN="$TEMPOMAX"
+                fi
+            fi
+        else
+            if [ $LOOP -lt 100 ]; then
+                echo -ne "."
+                let LOOP++
+                let UNSUCCESS++
+            else
+                LOOP=0
+                echo -e ".  $COUNT"
+                let LOOP++
+                let UNSUCCESS++
+            fi
+        fi
+        rm -f /tmp/pingui$data
+        let COUNT++
+    done
+}
+# -----------------------------[OPCOES]-----------------------------
 while [ ! -z $2 ] ; do
-    #echo "valor de 2 : $2"
-    
     case "$2" in
         -c ) 
             shift
@@ -127,56 +176,10 @@ while [ ! -z $2 ] ; do
     esac
     shift
 done
-
+# ---------------------------[CHAMANDO FUNCÕES]----------------------------
 opcoes
-
 echo -e "----------------------------------------[$(date +%H:%M:%S.%3N)]----------------------------------------------"
-while [ $COUNT -le $C ]; do
-    data=$(date +%H%M%S%N)
-    ping $IP -c 1 -W $F  > /tmp/pingui$data
-    if [ $? -eq 0 ]; then
-        if [ $LOOP -lt 100 ]; then
-            echo -ne "!"
-            let LOOP++
-            let SUCCESS++
-            tempo
-            if [ $(echo "$TEMPOMAX >= $MAX" | bc) -eq 1 ]; then
-                MAX="$TEMPOMAX"
-            fi
-            MED=$(echo "$TEMPOMAX+$MED" | bc)
-            if [ $(echo "$TEMPOMAX <= $MIN" | bc) -eq 1 ]; then
-                MIN="$TEMPOMAX"
-            fi
-        else
-            LOOP=0
-            echo -e "!  $COUNT"
-            let LOOP++
-            let SUCCESS++
-            tempo
-            if [ $(echo "$TEMPOMAX >= $MAX" | bc) -eq 1 ]; then
-                MAX="$TEMPOMAX"
-            fi
-            MED=$(echo "$TEMPOMAX+$MED" | bc)
-            if [ $(echo "$TEMPOMAX <= $MIN" | bc) -eq 1 ]; then
-                MIN="$TEMPOMAX"
-            fi
-        fi
-    else
-        if [ $LOOP -lt 100 ]; then
-            echo -ne "."
-            let LOOP++
-            let UNSUCCESS++
-        else
-            LOOP=0
-            echo -e ".  $COUNT"
-            let LOOP++
-            let UNSUCCESS++
-        fi
-    fi
-    rm -f /tmp/pingui$data
-    let COUNT++
-done
+rodar
 let COUNT--
 echo -e "\n----------------------------------------[$(date +%H:%M:%S.%3N)]----------------------------------------------"
-
 mostrar
