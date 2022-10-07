@@ -12,9 +12,9 @@ COUNT=1
 LOOP=1
 SUCCESS=0
 UNSUCCESS=0
-MIN=0
+MIN=1000
 MED=0
-MAX=0.900
+MAX=0
 #
 if [ -z $1 ]; then
     break
@@ -108,9 +108,9 @@ while [ $COUNT -le $C ]; do
                 MAX="$TEMPOMAX"
             fi
             MED=$(echo "$TEMPOMAX+$MED" | bc)
-            #if [ $(echo "$TEMPOMAX <= $MIN" | bc) -eq 1 ]; then
-            #    MIN="$TEMPOMAX"
-            #fi
+            if [ $(echo "$TEMPOMAX <= $MIN" | bc) -eq 1 ]; then
+                MIN="$TEMPOMAX"
+            fi
         else
             LOOP=1
             echo -e "!"
@@ -141,10 +141,10 @@ echo -e "PERDAS\t\t: $UNSUCCESS"
 
 #echo -e "TEMPO MIN\t: $MIN ms"
 if [ $SUCCESS -ne 0 ]; then
-    mtu
     echo -e "TEMPO MAX\t: $MAX ms"
     MED=$(echo "$MED/$COUNT" | bc)
     echo -e "TEMPO MED\t: $MED ms"
+    mtu
 fi
 #tempos
 #echo -e "TEMPO MIN\t: $TEMPOMIN"
