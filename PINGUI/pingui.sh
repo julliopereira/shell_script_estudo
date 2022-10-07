@@ -16,9 +16,6 @@ MIN=1000
 MED=0
 MAX=0
 #
-if [ -z $1 ]; then
-    break
-fi
 IP=$1
 #
 mtu() {
@@ -51,7 +48,7 @@ mtu() {
 tempo() {
     #TEMPOMIN=$(test=$(cat /tmp/pingui | grep rtt | cut -d "=" -f 2 | awk -F "/" '{print $1}') ; echo "$test-0" | bc )
     #TEMPOMED=$(cat /tmp/pingui | grep rtt | cut -d "=" -f 2 | awk -F "/" '{print $2}')
-    TEMPOMAX=$(cat /tmp/pingui | grep rtt | cut -d "=" -f 2 | awk -F "/" '{print $3}')
+    TEMPOMAX=$(cat /tmp/pingui$data | grep rtt | cut -d "=" -f 2 | awk -F "/" '{print $3}')
 }
 #
 while [ ! -z $2 ] ; do
@@ -114,7 +111,8 @@ echo -e "----------------------------------------[$(date +%H:%M:%S.%3N)]--------
 #A=$(date +%H%M%S%3N)
 while [ $COUNT -le $C ]; do
     #ping $IP -c 1 -W $F > /dev/null
-    ping $IP -c 1 -W $F  > /tmp/pingui
+    data=$(date +%H%M%S%N)
+    ping $IP -c 1 -W $F  > /tmp/pingui$data
     if [ $? -eq 0 ]; then
         if [ $LOOP -lt 100 ]; then
             echo -ne "!"
@@ -130,7 +128,7 @@ while [ $COUNT -le $C ]; do
             fi
         else
             LOOP=0
-            echo -e "!"
+            echo -e "!  $COUNT"
             let LOOP++
             let SUCCESS++
             tempo
@@ -149,11 +147,12 @@ while [ $COUNT -le $C ]; do
             let UNSUCCESS++
         else
             LOOP=0
-            echo -e "."
+            echo -e ".  $COUNT"
             let LOOP++
             let UNSUCCESS++
         fi
-    fi 
+    fi
+    rm -f /tmp/pingui$data
     let COUNT++
 done
 let COUNT--
@@ -162,6 +161,7 @@ echo -e "\n----------------------------------------[$(date +%H:%M:%S.%3N)]------
 #echo "count $COUNT success $SUCCESS unsuccess $UNSUCCESS"
 PERCSU=$(echo "($SUCCESS*100)/$COUNT" | bc)
 PERCUN=$(echo "($UNSUCCESS*100)/$COUNT" | bc)
+echo -e "DESTINO\t\t: $IP"
 echo -e "RETORNO\t\t: $SUCCESS\t ($PERCSU %)"
 echo -e "PERDAS\t\t: $UNSUCCESS\t ($PERCUN %)"
 if [ $SUCCESS -ne 0 ]; then
