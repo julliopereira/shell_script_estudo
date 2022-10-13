@@ -155,12 +155,12 @@ rodar() {
             fi
         else
             if [ $LOOP -lt 100 ]; then
-                echo -ne "."
+                echo -ne "\a."
                 let LOOP++
                 let UNSUCCESS++
             else
                 LOOP=0
-                echo -e ".  $COUNT"
+                echo -e "\a.  $COUNT"
                 let LOOP++
                 let UNSUCCESS++
             fi
