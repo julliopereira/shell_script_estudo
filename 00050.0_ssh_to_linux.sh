@@ -28,7 +28,9 @@ func_ssh () {
     # INICIA SESSAO NAO SOLICITANDO OK PARA INCLUSAO EM knowhosts
     # E EXECUTA COMANDOS DA VARIAVEL $COMM 
     # SALVANDO RESULTADO DOS COMANDOS EM /tmp/
-	sshpass -e ssh $LOGIN@$IP -o StrictHostKeyChecking=no "$COMM" > /tmp/$IP'command.txt'
+    rm -fr /tmp/$IP'command.txt'
+    echo -e "# =======================================[$IP]======================================= #" > /tmp/$IP'command.txt'
+	sshpass -e ssh $LOGIN@$IP -o StrictHostKeyChecking=no "$COMM" >> /tmp/$IP'command.txt'
 } 
 #
 func_filtra () {
@@ -48,13 +50,13 @@ func_data () {
 #
 #
 for IP in $(cat IPS); do                    # APLICA EM CADA IP 
-    ping -c 2 -i 0.2 -W 1 $IP > /dev/null
+    ping -c 2 -i 0.2 -W 0.5 $IP > /dev/null
     if [ $? -eq 0 ]; then 
 	    func_ssh
         #func_filtra
     else
         func_data 
-        echo -e "$IP\tNo Ping!" > down$DATA.log 
+        echo -e "$IP\tNo Ping!" >> down$DATA.log 
     fi
 done 
 #
