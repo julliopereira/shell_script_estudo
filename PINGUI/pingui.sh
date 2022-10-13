@@ -2,7 +2,7 @@
 #
 # AUTHOR            : JULIO C. PEREIRA       
 # CONTATO           : JULLIOPEREIRA@GMAIL.COM    
-# OBJETIVO          : DISPARO DE ICMP
+# OBJETIVO          : TESTE COM ICMP
 # 
 # v0.1 2022-09-21   Julio C. Pereira
 #   - Iniciado
@@ -10,8 +10,28 @@
 # v1.0 2022-09-07   Julio C. Pereira   
 #   - Adicionado funções
 #
+# V1.1 2022-10-13   Julio C. Pereira
+#   - Adicionada ajuda
 #
 #
+#-----------------------------[MENSAGEM]----------------------------
+HELP="
+Uso: $(basename $0) [TARGET] [OPCOES]
+
+    -c [n]      Quantidade de pacotes a serem enviados/recebidos
+    -t [n]      Tempo entre um envio em seg, ex: 1 | 0.1 | 0.3
+    -m [s|n]    Verificar tamanho máximo de pacote (MTU)
+    -s [n]      Tamanho de pacote a ser encaminhado/recebido
+    -h,--help   Ajuda
+
+exemplo:
+
+     $(basename $0) 10.0.2.2 -c 20
+     $(basename $0) 10.0.2.2 -c 20 -s 128
+     $(basename $0) 10.0.2.2 -c 20 -s 800 -t 0.3
+     $(basename $0) 10.0.2.2 -c 20 -s 800 -t 0.3 -m s
+"
+
 # ----------------------------[VARIAVEIS]----------------------------
 COUNT=1
 LOOP=1
@@ -20,9 +40,11 @@ UNSUCCESS=0
 MIN=1000
 MED=0
 MAX=0
+H=0
 IP=$1
 # -----------------------------[FUNÇÕES]-----------------------------
 mtu() {
+    echo -e "----------------------------------------------------------------------------------------------------"
     MTU=8
     while [ $MTU -ne 0 ]; do
         #IP=$1
@@ -60,6 +82,7 @@ mostrar() {
         MED=$(echo "$MED/$COUNT" | bc)
         echo -e "TEMPO MED\t: $MED ms"
         echo -e "TEMPO MIN\t: $MIN ms"
+        echo -e "TAMANHO PACOTE\t: $S bytes"
         if [ "$M" == "s" ]; then
             mtu
         fi
@@ -73,6 +96,7 @@ tempo() {
 }
 #
 opcoes() {
+    # TRATAMENTO DE FALORES, SENÃO HOUVER UTILIZAR ELSE PARA VALOR DEFAULT
     if [ ! -z $C ]; then
         echo -n
     else
@@ -183,6 +207,11 @@ while [ ! -z $2 ] ; do
             else
                 echo "Não especificado, faltou tamanho do pacote ex: 64 | 128 ..." ; echo ; exit 1
             fi
+            ;;
+        -h|--help)
+            echo -e "$HELP"
+            H=1
+            break
             ;;            
         *) 
             echo -e "Opção incorreta !" ;
@@ -193,11 +222,13 @@ while [ ! -z $2 ] ; do
 done
 # ---------------------------[CHAMANDO FUNCÕES]----------------------------
 if [ ! -z $1 ]; then
-	opcoes
-	echo -e "----------------------------------------[$(date +%H:%M:%S.%3N)]----------------------------------------------"
-	rodar
-	let COUNT--
-	echo -e "\n----------------------------------------[$(date +%H:%M:%S.%3N)]----------------------------------------------"
-	mostrar
+    if [ $H -eq "0" ]; then
+        opcoes
+        echo -e "----------------------------------------[$(date +%H:%M:%S.%3N)]----------------------------------------------"
+        rodar
+        let COUNT--
+        echo -e "\n----------------------------------------[$(date +%H:%M:%S.%3N)]----------------------------------------------"
+        mostrar
+    fi
 fi
 exit 0
