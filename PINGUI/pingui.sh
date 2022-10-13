@@ -90,12 +90,18 @@ opcoes() {
     else
         M=n
     fi
+
+    if [ ! -z $S ]; then
+        S=$(echo "$S")
+    else
+        S=64
+    fi
 }
 #
 rodar() {
     while [ $COUNT -le $C ]; do
         data=$(date +%H%M%S%N)
-        ping $IP -c 1 -W $F  > /tmp/pingui$data
+        ping $IP -c 1 -W $F -s $S > /tmp/pingui$data
         if [ $? -eq 0 ]; then
             if [ $LOOP -lt 100 ]; then
                 echo -ne "!"
@@ -168,7 +174,16 @@ while [ ! -z $2 ] ; do
             else
                 echo "Não especificado se deve testar MTU (s|n)!" ; echo ; exit 1
             fi
-            ;;         
+            ;;
+        -s )
+            shift
+            delim="$2"
+            if [ ! -z $delim ]; then
+                S=$2
+            else
+                echo "Não especificado, faltou tamanho do pacote ex: 64 | 128 ..." ; echo ; exit 1
+            fi
+            ;;            
         *) 
             echo -e "Opção incorreta !" ;
             echo exit 1
