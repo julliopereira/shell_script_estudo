@@ -61,11 +61,7 @@ for IP in $(cat IPS); do                    # APLICA EM CADA IP
 done 
 #
 #
-#
-#
 unset SSHPASS                               # APOS RODAR TODO SCRIPT REALIZANDO AS COLETAS O REMOVE DE env
-#
-#
 #
 #
 exit 0 
