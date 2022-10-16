@@ -33,6 +33,7 @@ fi
 
 # CONDICIONAL SIMPLIFICADA
 
-test -e /home && echo existe || não existe       # SE EXISTIR &&(CONDICAO VERDADEIRA) ||(CONDICAO FALSA)
+test -e /home && echo existe || echo não existe       # SE EXISTIR &&(CONDICAO VERDADEIRA) ||(CONDICAO FALSA)
+test -e rome && echo existe || echo não existe        # MESMO DE O DE CIMA POREM AGORA COM RESULTADO FALSO
 
 
