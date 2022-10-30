@@ -1,0 +1,5 @@
+# PARA IMPORTAR VARIAVEL DE UM ARQUIVO BASTA APONTAR O ARQUIVO QUE CONTENHA AS VARIAVEIS
+
+. variaveis.txt
+
+echo "conteúdo da variavel $A"
