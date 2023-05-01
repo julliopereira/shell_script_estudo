@@ -41,6 +41,10 @@ echo -e "${MEU_ARRAY[*]} \t-> acrecentado Z"
 unset MEU_ARRAY[2]                                     # REMOVER POSICAO 2
 echo -e "${MEU_ARRAY[*]} \t-> removido K"
 
+unset MEU_ARRAY[${#MEU_ARRAY[@]}:-1]                   # REMOVER A ULTIMA POSICAO DO ARRAY
+echo -e "${MEU_ARRAY[*]} \t-> removida ultima pos"
+
+
 unset MEU_ARRAY                                        # REMOVER TODO O ARRAY
 echo -e "${MEU_ARRAY[*]} \t\t-> removido arrays!"    
 
